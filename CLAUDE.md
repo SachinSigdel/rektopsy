@@ -62,18 +62,20 @@ Reference signature (Jupiter Custom 6001, no funds moved):
 
 ## Build order — stop after each step and show the user
 1. ✅ `fetch.py` + `parse.py` on one real failed signature.
-2. `eval/cases.json`: 25 real mainnet cases. Categories: slippage, compute
-   budget exceeded, insufficient funds, account not found, stale blockhash
-   (never-landed path), unknown custom error, and one that SUCCEEDED (must not
-   be described as failed). Save each tx's JSON to `eval/fixtures/` so the eval
-   is reproducible. **Most failed Jupiter txs are arbitrage bots** (round trips
-   back to the same token) — filter for user-like wallets / one-way swaps.
-   Claude drafts labels; **the user confirms each label** (don't grade against
-   our own unreviewed labels).
+2. ✅ `eval/cases.json`: 25 real mainnet cases + fixtures in `eval/fixtures/`.
+   Found with `eval/discover.py <program>` (filters Jupiter arbitrage round
+   trips). The user is new to Solana and can't hand-check labels, so each label
+   carries `evidence`: the program's own error log line, a published IDL
+   reference (Jupiter 6001), or, for `unknown_custom`, absence from public
+   registries. Never-landed cases use synthetic random signatures (user OK'd).
+   "Account not found" uses Anchor `AccountNotInitialized` (3012), since real
+   `AccountNotFound` txs never land (user OK'd). The user will spot-check for
+   bot-like wallets once the MVP UI exists.
 3. `decode.py` (Anchor IDL on-chain → local map → "unknown") + `fixes.py` +
    `explain.py` + `verify.py`, scored by `eval/run.py`: correct-cause %,
    hallucinated numbers (must be 0), fix usefulness (hand-scored 0-2), median
-   latency, tokens per autopsy. Baseline arm: raw logs in one prompt to the same
+   latency, tokens per autopsy. If decode.py resolves an `unknown_custom`
+   case via an on-chain IDL, relabel it. Baseline arm: raw logs in one prompt to the same
    Groq model, same 25 cases.
 4. FastAPI: `POST /autopsy { signature }`.
 5. Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal

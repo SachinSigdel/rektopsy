@@ -17,7 +17,7 @@ CONSUMED_RE = re.compile(r"^Program (\w+) consumed (\d+) of (\d+) compute units$
 LOG_RE = re.compile(r"^Program log: (.*)$")
 CUSTOM_ERR_RE = re.compile(r"custom program error: (0x[0-9a-fA-F]+)")
 ANCHOR_ERR_RE = re.compile(
-    r"AnchorError (?:thrown in (?P<file>\S+):(?P<line>\d+)|occurred)\. "
+    r"AnchorError (?:thrown in (?P<file>\S+):(?P<line>\d+)|caused by account: (?P<account>\w+)|occurred)\. "
     r"Error Code: (?P<name>\w+)\. Error Number: (?P<number>\d+)\. Error Message: (?P<message>.*?)\.?$"
 )
 # "key: 123" / "key = 123" pairs inside program logs. Digits embedded in base58
@@ -123,6 +123,7 @@ def parse_logs(logs: list[str], instructions: list[dict]) -> dict:
                     "name": am.group("name"),
                     "number": int(am.group("number")),
                     "message": am.group("message"),
+                    "account": am.group("account"),
                     "source": f"logs[{i}]",
                 })
                 continue

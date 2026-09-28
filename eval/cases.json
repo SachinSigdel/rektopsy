@@ -1,0 +1,523 @@
+[
+  {
+    "id": "case01",
+    "category": "slippage",
+    "signature": "5ca6A2pvwVXNbrck3S6yeZb9dUb8L79bqXnShs3qckao8s9iQk71XV9XWAzp1jcAmWgcxYgr6VUajnPP5UWgSwFH",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+      "error_kind": "Custom",
+      "custom_code": 6001,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Jupiter: output below minimum (SlippageToleranceExceeded)"
+    },
+    "evidence": {
+      "kind": "reference",
+      "detail": "https://dev.jup.ag/docs/swap/common-errors (Jupiter v6 IDL: 6001 = SlippageToleranceExceeded)"
+    }
+  },
+  {
+    "id": "case02",
+    "category": "slippage",
+    "signature": "4BgkFxnMy9gXBTAsD7BUYjDPzrPjqiB9dyvouPD7MEX4UW1XFyBQPhLDWxDRJVjuXKsG2pzLi3EeyvFMDZYLStVG",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+      "error_kind": "Custom",
+      "custom_code": 6001,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Jupiter: output below minimum (SlippageToleranceExceeded)"
+    },
+    "evidence": {
+      "kind": "reference",
+      "detail": "https://dev.jup.ag/docs/swap/common-errors (Jupiter v6 IDL: 6001 = SlippageToleranceExceeded)"
+    }
+  },
+  {
+    "id": "case03",
+    "category": "slippage",
+    "signature": "3uECyVRRnszyFG9R7BMszKn43zn4EncmSYBjVeazowzBq7Tbtys3dnBbMPBQSuDa1vR3cbdXTM7hT6VLJnVpUJKn",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG",
+      "error_kind": "Custom",
+      "custom_code": 6002,
+      "error_name": "ExceededSlippage",
+      "funds_moved_beyond_fee": false,
+      "cause": "Meteora DAMM v2 exact-out swap: exceeded slippage (ExceededSlippage)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[28]",
+      "detail": "Program log: AnchorError thrown in programs/cp-amm/src/instructions/swap/swap_exact_out.rs:48. Error Code: ExceededSlippage. Error Number: 6002. Error Message: Exceeded slippage tolerance."
+    }
+  },
+  {
+    "id": "case04",
+    "category": "slippage",
+    "signature": "5miXGUwa2w8Agg89uKcz55X6pDCn1Ave6S2CM8vcjeCxpyPmqWatgEg2CLwx93Uhttga7rAg7QQ7EFMhZQ35j3Xi",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "error_kind": "Custom",
+      "custom_code": 6002,
+      "error_name": "TooMuchSolRequired",
+      "funds_moved_beyond_fee": false,
+      "cause": "pump.fun buy: needed more SOL than max allowed (TooMuchSolRequired)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[38]",
+      "detail": "Program log: AnchorError thrown in programs/pump/src/lib.rs:549. Error Code: TooMuchSolRequired. Error Number: 6002. Error Message: slippage: Too much SOL required to buy the given amount of tokens.."
+    }
+  },
+  {
+    "id": "case05",
+    "category": "slippage",
+    "signature": "3cjgX3YJQSrnmsa71ydLKTnaTgerCHYX86fvdfkMyrX5xhQ1uxkBE4wmHEhkgAq5puSBEHeLbK55gYUkoBWWm6Z",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "error_kind": "Custom",
+      "custom_code": 6003,
+      "error_name": "TooLittleSolReceived",
+      "funds_moved_beyond_fee": false,
+      "cause": "pump.fun sell: would receive less SOL than minimum (TooLittleSolReceived)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[21]",
+      "detail": "Program log: AnchorError thrown in programs/pump/src/sell_v2.rs:355. Error Code: TooLittleSolReceived. Error Number: 6003. Error Message: slippage: Too little SOL received to sell the given amount of tokens.."
+    }
+  },
+  {
+    "id": "case06",
+    "category": "slippage",
+    "signature": "2KhUjNQsVikHC6JnpigNW4fhspGJYPM7SsgutEXjR6mj8ufLgSdVwA9KZEeMjCdhxGcMMMJG91rUyYM9h32c94zX",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+      "error_kind": "Custom",
+      "custom_code": 30,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Raydium AMM v4: exceeded desired slippage limit (error 30, non-Anchor)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[6]",
+      "detail": "Program log: AMM error: Exceeded desired slippage limit."
+    }
+  },
+  {
+    "id": "case07",
+    "category": "slippage",
+    "signature": "65oXZrLfUpLFrUQky2LUtLAwMqwTAm2GzhttJ7yZhtCYMxqcMceGnMybBJfg3wWKFvpVq715cLuj2hPkPwVG4eLV",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "error_kind": "Custom",
+      "custom_code": 6040,
+      "error_name": "BuySlippageBelowMinBaseAmountOut",
+      "funds_moved_beyond_fee": false,
+      "cause": "PumpSwap AMM buy: tokens out below minimum (BuySlippageBelowMinBaseAmountOut)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[46]",
+      "detail": "Program log: AnchorError thrown in programs/pump-amm/src/instructions/swap/buy.rs:700. Error Code: BuySlippageBelowMinBaseAmountOut. Error Number: 6040. Error Message: buy: slippage - would buy less tokens than expected min_base_amount_out."
+    }
+  },
+  {
+    "id": "case08",
+    "category": "compute_budget",
+    "signature": "5qF9ozWpdZoRKwQSxS7GZqn55RiXCtAGRabjZRArXf1TcHKcDwdRUDkaLjzRyR4DgmyJHPgLqEsKpMZ9xR9gLvMb",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi",
+      "error_kind": "ComputationalBudgetExceeded",
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Jupiter route ran out of compute units: CU limit too low"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[46]",
+      "detail": "Program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi failed: Computational budget exceeded"
+    }
+  },
+  {
+    "id": "case09",
+    "category": "compute_budget",
+    "signature": "5UkNUm3ped8u1zGMRLEkFn95owU2gPpXttAPEUqGpXA87Qd74Fg5vg5kFSMrWdvvE2PHRzAo5Xjcutp6NWM2di2Z",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq",
+      "error_kind": "ProgramFailedToComplete",
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Jupiter route ran out of compute units (exceeded CUs meter): CU limit too low"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[48]",
+      "detail": "Program HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq failed: exceeded CUs meter at BPF instruction"
+    }
+  },
+  {
+    "id": "case10",
+    "category": "compute_budget",
+    "signature": "3SCWptBnYeML5fAttkcoDGtQotQZmpy3DyTTg8cX3kYRFdwkjG4AEkRcX6fKaSxe2SE71jB1ww66z8b4RAGjpUf8",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi",
+      "error_kind": "ComputationalBudgetExceeded",
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Jupiter shared-accounts route ran out of compute units: CU limit too low"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[45]",
+      "detail": "Program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi failed: Computational budget exceeded"
+    }
+  },
+  {
+    "id": "case11",
+    "category": "compute_budget",
+    "signature": "4oUrVZD2wxgWLsSrfPXqZcdLDGDy5QgdLiqGwmtxJ16wb834TfYiWmKEByyRiEDmMLtfJDmutdZpQFWCgJwhMGSV",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "error_kind": "ComputationalBudgetExceeded",
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "pump.fun trade via router ran out of compute units: CU limit too low"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[48]",
+      "detail": "Program 6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P failed: Computational budget exceeded"
+    }
+  },
+  {
+    "id": "case12",
+    "category": "insufficient_funds",
+    "signature": "63McbkapdrYPMiYAZJGNCQBL9boY3Fj6winhgchdfiWAiAeY1CRE3XyYEMxXgY3t3W3NRfyUyJwRkU7k5YYdbXvX",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "11111111111111111111111111111111",
+      "error_kind": "Custom",
+      "custom_code": 1,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Not enough SOL: System transfer needed 987653 lamports, had 914528"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[42]",
+      "detail": "Transfer: insufficient lamports 914528, need 987653"
+    }
+  },
+  {
+    "id": "case13",
+    "category": "insufficient_funds",
+    "signature": "2LwJPE79KPLo1S1BjVX4DkKwECK2s3VSqpJfdgPp5n2Pn6AgcxBjNAmLPW3gHrDF9FwJPLo768BMZwWtfqUUmxXA",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "11111111111111111111111111111111",
+      "error_kind": "Custom",
+      "custom_code": 1,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Not enough SOL: System transfer needed 10000000 lamports, had 7361293"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[45]",
+      "detail": "Transfer: insufficient lamports 7361293, need 10000000"
+    }
+  },
+  {
+    "id": "case14",
+    "category": "insufficient_funds",
+    "signature": "4cLUZ92T4dBLJvn2WQBzBUZSjcCjfhmN1jogZs2uStvThM3AK68ddJKyhfRJ419eCftjeWLvrbVCCT3y4BHqcDuJ",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "error_kind": "Custom",
+      "custom_code": 1,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Token balance too low for the transfer (SPL Token insufficient funds), inside PumpSwap"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[82]",
+      "detail": "Program log: Error: insufficient funds"
+    }
+  },
+  {
+    "id": "case15",
+    "category": "insufficient_funds",
+    "signature": "5hvvqJkgMttv52WcqFBJeTT5ttnXmcHXF5ueBzbzyQgzvnKMuz8E6zDThjU2S9jnfReRhSQTESb35dpkkQ2aVhPT",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "error_kind": "Custom",
+      "custom_code": 1,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Token balance too low for the transfer (SPL Token insufficient funds), inside Meteora DBC"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[27]",
+      "detail": "Program log: Error: insufficient funds"
+    }
+  },
+  {
+    "id": "case16",
+    "category": "account_not_found",
+    "signature": "42QVgUmfgKnk7okvry3EjE9YGMT9imMAGckV8ZyMVJqRWbz9kTWQwjXnv4RVBEQtFm1FcT5HP6VNUXMeKdxsD9CC",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "error_kind": "Custom",
+      "custom_code": 3012,
+      "error_name": "AccountNotInitialized",
+      "funds_moved_beyond_fee": false,
+      "cause": "pump.fun sell: user's token account doesn't exist (AccountNotInitialized: associated_user)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[10]",
+      "detail": "Program log: AnchorError caused by account: associated_user. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
+    }
+  },
+  {
+    "id": "case17",
+    "category": "account_not_found",
+    "signature": "3D4YLMZbmGqAjXaQeinspoL6zBcvcsaPyFHbzhYJ9Bnb15UGPhUhZCkWnntZYNhJe7Sz5coe11ELkTd6FZRmm6fT",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+      "error_kind": "Custom",
+      "custom_code": 3012,
+      "error_name": "AccountNotInitialized",
+      "funds_moved_beyond_fee": false,
+      "cause": "pump.fun sell: user's token account doesn't exist (AccountNotInitialized: associated_user)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[6]",
+      "detail": "Program log: AnchorError caused by account: associated_user. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
+    }
+  },
+  {
+    "id": "case18",
+    "category": "account_not_found",
+    "signature": "qpqJQ3t46W7xAtH93JfUGWtC1d1NLdd2QLKrUofHMhL2ZBrn66HokvaUuX4QD7DnHsyVChfDnD6tnUTjxH1kZ19",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
+      "error_kind": "Custom",
+      "custom_code": 3012,
+      "error_name": "AccountNotInitialized",
+      "funds_moved_beyond_fee": false,
+      "cause": "Raydium CLMM decrease liquidity: recipient token account not created (AccountNotInitialized)"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[6]",
+      "detail": "Program log: AnchorError caused by account: recipient_token_account_1. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
+    }
+  },
+  {
+    "id": "case19",
+    "category": "unknown_custom",
+    "signature": "3jsRdF66upuwiqtngwzXe7maKBF1jsU3N1Vm2huUEtvRyCFcJ62firMQx5BsPvWZ39TDnjqQMdXBRUQ9zGGfQoXq",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc",
+      "error_kind": "Custom",
+      "custom_code": 1004,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "unknown: custom error 1004 from an unrecognised program"
+    },
+    "evidence": {
+      "kind": "absence",
+      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
+    },
+    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+  },
+  {
+    "id": "case20",
+    "category": "unknown_custom",
+    "signature": "4pa4Ph3HE8wV4SFc49jVfMg4da2as55U1i3RNdMiwqUhanB3zn8n8ZU7Ux8SvsTTg1yjF4cGUbY7fBL9Pq5c3MUN",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y",
+      "error_kind": "Custom",
+      "custom_code": 43008,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "unknown: custom error 43008 from an unrecognised program"
+    },
+    "evidence": {
+      "kind": "absence",
+      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
+    },
+    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+  },
+  {
+    "id": "case21",
+    "category": "unknown_custom",
+    "signature": "3yvNmMPZnygkLGpnfxpbq2PatpLAqVK3A5tLy61yjDwnAjxUQ2MRB5XAAK225e7ob61SNFdSyqymcRS1Goobf6Lp",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj",
+      "error_kind": "Custom",
+      "custom_code": 0,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "unknown: custom error 0 from an unrecognised program"
+    },
+    "evidence": {
+      "kind": "absence",
+      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
+    },
+    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+  },
+  {
+    "id": "case22",
+    "category": "never_landed",
+    "signature": "BQDrJ9jGfbFNCkwmdqPtwsf8SNXQtgkZtE4pFMeTYaJcpWZVjtLjHHau4RFJxNBumjNjeCa7UKBLQMms2DuQJx8",
+    "label_status": "verified",
+    "expected": {
+      "found": false,
+      "succeeded": null,
+      "failing_program": null,
+      "error_kind": null,
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "never reached the chain: no funds moved, no fee charged; cause not provable"
+    },
+    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way.",
+    "evidence": {
+      "kind": "rpc",
+      "detail": "getTransaction returned null"
+    }
+  },
+  {
+    "id": "case23",
+    "category": "never_landed",
+    "signature": "4Q3QXkEmnmLgdnFvy2g6UjxutqtY9PxqVZS6y9FLnqeGuKc95WtgSBoCWL89sn75ZCy2aPQ9iHrw6C4aYVLF8vaY",
+    "label_status": "verified",
+    "expected": {
+      "found": false,
+      "succeeded": null,
+      "failing_program": null,
+      "error_kind": null,
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "never reached the chain: no funds moved, no fee charged; cause not provable"
+    },
+    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way.",
+    "evidence": {
+      "kind": "rpc",
+      "detail": "getTransaction returned null"
+    }
+  },
+  {
+    "id": "case24",
+    "category": "succeeded",
+    "signature": "3r2FAqZWeb1CRJgwKhPqjM3xzop9bMXCaxEG5VZTgUwiwJAaVGdpdisMwDRYZyTVUAkrecET2ZCmoK4vsX3TF5qA",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": true,
+      "failing_program": null,
+      "error_kind": null,
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": true,
+      "cause": "succeeded: Jupiter SOL/USDC swap; must not be described as failed"
+    },
+    "evidence": {
+      "kind": "meta",
+      "detail": "meta.err is null; token balances changed"
+    }
+  },
+  {
+    "id": "case25",
+    "category": "succeeded",
+    "signature": "4SXpCu8AfGWhgytZP7YXRkic2wkvGXSWXSgzNvyYM7RRyqNHrWomozH4fFiF9w1XBiTnBowX4TJZhRCH5DfkGtzk",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": true,
+      "failing_program": null,
+      "error_kind": null,
+      "custom_code": null,
+      "error_name": null,
+      "funds_moved_beyond_fee": true,
+      "cause": "succeeded: Jupiter USDC swap; must not be described as failed"
+    },
+    "evidence": {
+      "kind": "meta",
+      "detail": "meta.err is null; token balances changed"
+    }
+  }
+]
