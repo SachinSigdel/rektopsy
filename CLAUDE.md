@@ -31,8 +31,10 @@ later only to test a proposed fix in a sandbox.
 - **RPC:** public `https://api.mainnet-beta.solana.com` via `SOLANA_RPC_URL`
   (no Helius, no key). Respect rate limits; pace requests.
 - **LLM:** **Groq** free tier (`GROQ_API_KEY`), not Anthropic. Keep the LLM call
-  behind one small function so the provider is swappable. Check Groq's current
-  models when building step 3. Report tokens per autopsy instead of cost.
+  behind one small function so the provider is swappable. Model:
+  `llama-3.3-70b-versatile` (override with `GROQ_MODEL`); chosen over gpt-oss
+  because reasoning tokens would inflate tokens-per-autopsy. Report tokens per
+  autopsy instead of cost.
 - **Never-landed txs** (stale blockhash, can't pay fee): `getTransaction` returns
   null. Return a "never reached the chain, no funds moved, no fee charged"
   template. Don't claim a specific cause we can't prove.
@@ -47,18 +49,45 @@ later only to test a proposed fix in a sandbox.
 - `rektopsy/parse.py`: `extract_facts(signature, tx)` → facts dict. Walks the
   invoke/success/failed log stack; the first `failed` line is the root cause
   (outer frames re-log it). Every fact has a `source`.
+- `rektopsy/decode.py`: error name resolution (program log → runtime → local
+  map → on-chain Anchor IDL, cached in `.cache/idl/` → "unknown"), plus a
+  generic Borsh decoder that reads instruction args/accounts via the IDL.
+- `rektopsy/fixes.py`: `diagnose()` → category + fix values + funds status.
+  All numbers computed here with documented rules.
+- `rektopsy/verify.py`: rejects prose numbers absent from the brief.
+- `rektopsy/explain.py`: Groq call behind `complete()`; verify, retry once,
+  template fallback. Evidence list built in Python.
+- `rektopsy/pipeline.py`: `autopsy(signature)`, the single entry point.
 - `rektopsy/__main__.py`: CLI.
-- Planned: `decode.py`, `fixes.py`, `explain.py`, `verify.py`, `api.py`,
-  `eval/cases.json`, `eval/run.py`, `eval/fixtures/`, Next.js UI, widget.
+- `eval/`: `cases.json` + `fixtures/` (tx JSON, `idl/` snapshots) built by
+  `build_cases.py`; `run.py` scores; `discover.py` finds candidates.
+- Planned: `api.py`, Next.js UI, widget.
+
+## Solana gotchas learned
+- Most failed Jupiter txs are bots. `discover.is_bot_like`: same mint in and
+  out, several Jupiter swaps, token-ledger routes, 0%/100% slippage, or
+  in_amount == quoted_out. Users mostly send `route_v2`.
+- The on-chain Jupiter IDL is slightly off for v1 `route` (platform_fee_bps is
+  2 bytes in real data), so decoding reads from the front via the IDL, never
+  offsets from the end.
+- Anchor `require_gte!(left, right)` logs `Left:`/`Right:` and fails when
+  left < right. Min-out errors: left = got, right = minimum. Max-in errors:
+  left = maximum, right = needed.
+- Real users rarely hit compute limits (wallets simulate first); the two
+  compute bot cases are marked in `cases.json` notes.
 
 ## Run
 ```
-uv run python -m rektopsy <signature>            # prints facts JSON
-uv run python -m rektopsy <signature> --no-cache
+uv run python -m rektopsy <signature>            # autopsy JSON (LLM if GROQ_API_KEY set)
+uv run python -m rektopsy <signature> --no-llm   # template prose only
+uv run python -m rektopsy <signature> --facts    # raw extracted facts
+PYTHONPATH=. uv run python eval/run.py [--no-llm] [--baseline]
+PYTHONPATH=. uv run python eval/discover.py <program> --match 6001   # find cases
 ```
 Python 3.11 via uv. Scripts outside the package need `PYTHONPATH=.`.
-Reference signature (Jupiter Custom 6001, no funds moved):
-`5ca6A2pvwVXNbrck3S6yeZb9dUb8L79bqXnShs3qckao8s9iQk71XV9XWAzp1jcAmWgcxYgr6VUajnPP5UWgSwFH`
+Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
+`36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg`
+(The old reference `5ca6A2pv…` turned out to be an arbitrage bot: USDC->USDC at 0% slippage.)
 
 ## Build order — stop after each step and show the user
 1. ✅ `fetch.py` + `parse.py` on one real failed signature.
@@ -71,7 +100,8 @@ Reference signature (Jupiter Custom 6001, no funds moved):
    "Account not found" uses Anchor `AccountNotInitialized` (3012), since real
    `AccountNotFound` txs never land (user OK'd). The user will spot-check for
    bot-like wallets once the MVP UI exists.
-3. `decode.py` (Anchor IDL on-chain → local map → "unknown") + `fixes.py` +
+3. 🔶 (code done, no-LLM eval 25/25; waiting on GROQ_API_KEY for LLM + baseline
+   arms and fix scores in `eval/fix_scores.json`) `decode.py` (Anchor IDL on-chain → local map → "unknown") + `fixes.py` +
    `explain.py` + `verify.py`, scored by `eval/run.py`: correct-cause %,
    hallucinated numbers (must be 0), fix usefulness (hand-scored 0-2), median
    latency, tokens per autopsy. If decode.py resolves an `unknown_custom`

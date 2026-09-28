@@ -1,6 +1,9 @@
 """Find candidate eval cases: recent failed txs touching a program.
 
 Usage: PYTHONPATH=. uv run python eval/discover.py <program_or_address> [--limit N] [--ok]
+                                                  [--per N] [--match TEXT]
+
+--match keeps only errors whose text contains TEXT (e.g. ComputationalBudget).
 
 Read-only. Paces requests for the public RPC. Prints one summary line per tx;
 labels are drafted by hand from these, then confirmed by the user.
@@ -11,35 +14,62 @@ import time
 
 import httpx
 
+from rektopsy.decode import jupiter_swap_args, jupiter_swap_mints
 from rektopsy.fetch import fetch_transaction, rpc_url
 from rektopsy.parse import extract_facts
 
 
 def recent_signatures(address: str, limit: int) -> list[dict]:
-    payload = {"jsonrpc": "2.0", "id": 1, "method": "getSignaturesForAddress",
-               "params": [address, {"limit": limit, "commitment": "confirmed"}]}
-    for delay in (1, 2, 4, 8):
-        resp = httpx.post(rpc_url(), json=payload, timeout=30)
-        if resp.status_code != 429:
-            resp.raise_for_status()
-            return resp.json()["result"]
-        time.sleep(delay)
-    raise RuntimeError("rate limited")
+    """Newest first, paging past the RPC's 1000-per-call cap."""
+    out: list[dict] = []
+    while len(out) < limit:
+        opts = {"limit": min(1000, limit - len(out)), "commitment": "confirmed"}
+        if out:
+            opts["before"] = out[-1]["signature"]
+        payload = {"jsonrpc": "2.0", "id": 1, "method": "getSignaturesForAddress", "params": [address, opts]}
+        for delay in (1, 2, 4, 8, 0):
+            resp = httpx.post(rpc_url(), json=payload, timeout=30)
+            if resp.status_code != 429:
+                break
+            time.sleep(delay)
+        resp.raise_for_status()
+        page = resp.json()["result"]
+        if not page:
+            break
+        out += page
+    return out
 
 
 JUPITER = "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
 TOKEN_PROGRAMS = {"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"}
 
 
-def is_round_trip(tx: dict) -> bool:
-    """Arbitrage bots route a token back to itself: the same user account is source and destination."""
-    for ix in tx["transaction"]["message"]["instructions"]:
-        if ix.get("programId") != JUPITER:
-            continue
+def is_bot_like(tx: dict) -> bool:
+    """Jupiter traffic that doesn't look like a person using a swap UI.
+
+    Bots route a token back to itself (same user account as source and
+    destination, or a second swap leg back), use token-ledger routes, or set
+    0% slippage to demand break-even. The Jupiter UI/API sends one swap with
+    slippage above 0.
+    """
+    ixs = [ix for ix in tx["transaction"]["message"]["instructions"] if ix.get("programId") == JUPITER]
+    for ix in ixs:
         head = [a for a in ix.get("accounts", [])[:6] if a not in TOKEN_PROGRAMS and a != JUPITER]
         if len(head) != len(set(head)):
             return True
-    return False
+    if not ixs:
+        return False
+    if len(ixs) > 1:
+        return True
+    args = jupiter_swap_args(ixs[0])
+    if args is None:
+        return False
+    mints = jupiter_swap_mints(tx, ixs[0])
+    if mints and mints[0] == mints[1]:
+        return True
+    if "ledger" in args["instruction"] or args["slippage_bps"] in (0, 10000):
+        return True
+    return args.get("in_amount") == args.get("quoted_out_amount")
 
 
 def summarize(sig: str, facts: dict) -> str:
@@ -62,7 +92,8 @@ def main() -> None:
     want_ok = "--ok" in sys.argv
     sigs = recent_signatures(args[0], limit)
     per_bucket = int(sys.argv[sys.argv.index("--per") + 1]) if "--per" in sys.argv else 2
-    picked = [s for s in sigs if (s["err"] is None) == want_ok]
+    match = sys.argv[sys.argv.index("--match") + 1] if "--match" in sys.argv else None
+    picked = [s for s in sigs if (s["err"] is None) == want_ok and (not match or match in str(s["err"]))]
     print(f"{len(sigs)} recent, {sum(s['err'] is not None for s in sigs)} failed")
     buckets: dict[str, int] = {}
     skipped = 0
@@ -75,12 +106,12 @@ def main() -> None:
         if tx is None:
             print(s["signature"], "-> null")
             continue
-        if is_round_trip(tx):
+        if is_bot_like(tx):
             skipped += 1
             continue
         buckets[key] = buckets.get(key, 0) + 1
-        print(summarize(s["signature"], extract_facts(s["signature"], tx)))
-    print(f"skipped {skipped} round-trip (arbitrage) txs")
+        print(summarize(s["signature"], extract_facts(s["signature"], tx)), flush=True)
+    print(f"skipped {skipped} bot-like txs")
 
 
 if __name__ == "__main__":

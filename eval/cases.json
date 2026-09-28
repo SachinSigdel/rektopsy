@@ -2,7 +2,7 @@
   {
     "id": "case01",
     "category": "slippage",
-    "signature": "5ca6A2pvwVXNbrck3S6yeZb9dUb8L79bqXnShs3qckao8s9iQk71XV9XWAzp1jcAmWgcxYgr6VUajnPP5UWgSwFH",
+    "signature": "36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg",
     "label_status": "verified",
     "expected": {
       "found": true,
@@ -10,19 +10,19 @@
       "failing_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
       "error_kind": "Custom",
       "custom_code": 6001,
-      "error_name": null,
+      "error_name": "SlippageToleranceExceeded",
       "funds_moved_beyond_fee": false,
-      "cause": "Jupiter: output below minimum (SlippageToleranceExceeded)"
+      "cause": "Jupiter swap at 0.5% slippage: output fell below the minimum"
     },
     "evidence": {
       "kind": "reference",
-      "detail": "https://dev.jup.ag/docs/swap/common-errors (Jupiter v6 IDL: 6001 = SlippageToleranceExceeded)"
+      "detail": "Jupiter v6 on-chain IDL and https://dev.jup.ag/docs/swap/common-errors: 6001 = SlippageToleranceExceeded"
     }
   },
   {
     "id": "case02",
     "category": "slippage",
-    "signature": "4BgkFxnMy9gXBTAsD7BUYjDPzrPjqiB9dyvouPD7MEX4UW1XFyBQPhLDWxDRJVjuXKsG2pzLi3EeyvFMDZYLStVG",
+    "signature": "5Lurd9ZFKC3kRt3NvCCecdZNinzyyfMpwpbGzZeAXgwXdQnXy9MdLTYsUUrfxLgSenbvSyx9maPrMRUCS1ArUFau",
     "label_status": "verified",
     "expected": {
       "found": true,
@@ -30,13 +30,13 @@
       "failing_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
       "error_kind": "Custom",
       "custom_code": 6001,
-      "error_name": null,
+      "error_name": "SlippageToleranceExceeded",
       "funds_moved_beyond_fee": false,
-      "cause": "Jupiter: output below minimum (SlippageToleranceExceeded)"
+      "cause": "Jupiter SOL->token swap at 5% slippage: output fell below the minimum"
     },
     "evidence": {
       "kind": "reference",
-      "detail": "https://dev.jup.ag/docs/swap/common-errors (Jupiter v6 IDL: 6001 = SlippageToleranceExceeded)"
+      "detail": "Jupiter v6 on-chain IDL and https://dev.jup.ag/docs/swap/common-errors: 6001 = SlippageToleranceExceeded"
     }
   },
   {
@@ -73,7 +73,7 @@
       "custom_code": 6002,
       "error_name": "TooMuchSolRequired",
       "funds_moved_beyond_fee": false,
-      "cause": "pump.fun buy: needed more SOL than max allowed (TooMuchSolRequired)"
+      "cause": "pump.fun buy: needed more SOL than the max allowed (TooMuchSolRequired)"
     },
     "evidence": {
       "kind": "log",
@@ -94,7 +94,7 @@
       "custom_code": 6003,
       "error_name": "TooLittleSolReceived",
       "funds_moved_beyond_fee": false,
-      "cause": "pump.fun sell: would receive less SOL than minimum (TooLittleSolReceived)"
+      "cause": "pump.fun sell: would receive less SOL than the minimum (TooLittleSolReceived)"
     },
     "evidence": {
       "kind": "log",
@@ -163,7 +163,8 @@
       "kind": "log",
       "source": "logs[46]",
       "detail": "Program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi failed: Computational budget exceeded"
-    }
+    },
+    "notes": "Bot wallet (no real-user example found in a 5000-tx scan; wallets simulate first, so users rarely hit this). Kept because the failure mechanics are identical."
   },
   {
     "id": "case09",
@@ -184,31 +185,11 @@
       "kind": "log",
       "source": "logs[48]",
       "detail": "Program HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq failed: exceeded CUs meter at BPF instruction"
-    }
+    },
+    "notes": "Bot wallet (no real-user example found in a 5000-tx scan; wallets simulate first, so users rarely hit this). Kept because the failure mechanics are identical."
   },
   {
     "id": "case10",
-    "category": "compute_budget",
-    "signature": "3SCWptBnYeML5fAttkcoDGtQotQZmpy3DyTTg8cX3kYRFdwkjG4AEkRcX6fKaSxe2SE71jB1ww66z8b4RAGjpUf8",
-    "label_status": "verified",
-    "expected": {
-      "found": true,
-      "succeeded": false,
-      "failing_program": "BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi",
-      "error_kind": "ComputationalBudgetExceeded",
-      "custom_code": null,
-      "error_name": null,
-      "funds_moved_beyond_fee": false,
-      "cause": "Jupiter shared-accounts route ran out of compute units: CU limit too low"
-    },
-    "evidence": {
-      "kind": "log",
-      "source": "logs[45]",
-      "detail": "Program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi failed: Computational budget exceeded"
-    }
-  },
-  {
-    "id": "case11",
     "category": "compute_budget",
     "signature": "4oUrVZD2wxgWLsSrfPXqZcdLDGDy5QgdLiqGwmtxJ16wb834TfYiWmKEByyRiEDmMLtfJDmutdZpQFWCgJwhMGSV",
     "label_status": "verified",
@@ -220,7 +201,7 @@
       "custom_code": null,
       "error_name": null,
       "funds_moved_beyond_fee": false,
-      "cause": "pump.fun trade via router ran out of compute units: CU limit too low"
+      "cause": "pump.fun trade via a trading router ran out of compute units: CU limit too low"
     },
     "evidence": {
       "kind": "log",
@@ -229,7 +210,7 @@
     }
   },
   {
-    "id": "case12",
+    "id": "case11",
     "category": "insufficient_funds",
     "signature": "63McbkapdrYPMiYAZJGNCQBL9boY3Fj6winhgchdfiWAiAeY1CRE3XyYEMxXgY3t3W3NRfyUyJwRkU7k5YYdbXvX",
     "label_status": "verified",
@@ -250,7 +231,7 @@
     }
   },
   {
-    "id": "case13",
+    "id": "case12",
     "category": "insufficient_funds",
     "signature": "2LwJPE79KPLo1S1BjVX4DkKwECK2s3VSqpJfdgPp5n2Pn6AgcxBjNAmLPW3gHrDF9FwJPLo768BMZwWtfqUUmxXA",
     "label_status": "verified",
@@ -271,7 +252,7 @@
     }
   },
   {
-    "id": "case14",
+    "id": "case13",
     "category": "insufficient_funds",
     "signature": "4cLUZ92T4dBLJvn2WQBzBUZSjcCjfhmN1jogZs2uStvThM3AK68ddJKyhfRJ419eCftjeWLvrbVCCT3y4BHqcDuJ",
     "label_status": "verified",
@@ -292,7 +273,7 @@
     }
   },
   {
-    "id": "case15",
+    "id": "case14",
     "category": "insufficient_funds",
     "signature": "5hvvqJkgMttv52WcqFBJeTT5ttnXmcHXF5ueBzbzyQgzvnKMuz8E6zDThjU2S9jnfReRhSQTESb35dpkkQ2aVhPT",
     "label_status": "verified",
@@ -304,11 +285,32 @@
       "custom_code": 1,
       "error_name": null,
       "funds_moved_beyond_fee": false,
-      "cause": "Token balance too low for the transfer (SPL Token insufficient funds), inside Meteora DBC"
+      "cause": "Token balance too low for the transfer (SPL Token-2022 insufficient funds), inside Meteora DBC"
     },
     "evidence": {
       "kind": "log",
       "source": "logs[27]",
+      "detail": "Program log: Error: insufficient funds"
+    }
+  },
+  {
+    "id": "case15",
+    "category": "insufficient_funds",
+    "signature": "2UzDxGPfV7Jrzmn5o1kjzGdzehr48SDGK7tq8MQTiWE7dmAgShs3VT8M79HL69D38nnqR3fNtEX2i1Bij6zm8J58",
+    "label_status": "verified",
+    "expected": {
+      "found": true,
+      "succeeded": false,
+      "failing_program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "error_kind": "Custom",
+      "custom_code": 1,
+      "error_name": null,
+      "funds_moved_beyond_fee": false,
+      "cause": "Swap succeeded, then a follow-up USDC transfer of 0.359806 needed more than the account held"
+    },
+    "evidence": {
+      "kind": "log",
+      "source": "logs[75]",
       "detail": "Program log: Error: insufficient funds"
     }
   },
@@ -392,9 +394,9 @@
     },
     "evidence": {
       "kind": "absence",
-      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
+      "detail": "No error text in logs; program has no on-chain IDL and no public error table (checked 2026-09-28)."
     },
-    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+    "notes": "Bot program; tests the no-guess path."
   },
   {
     "id": "case20",
@@ -413,9 +415,9 @@
     },
     "evidence": {
       "kind": "absence",
-      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
+      "detail": "No error text in logs; program has no on-chain IDL and no public error table (checked 2026-09-28)."
     },
-    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+    "notes": "Bot program; tests the no-guess path."
   },
   {
     "id": "case21",
@@ -434,9 +436,8 @@
     },
     "evidence": {
       "kind": "absence",
-      "detail": "No error text in logs; program not found in public IDL registries or web search (2026-09-28)."
-    },
-    "notes": "Re-check in step 3: if decode.py finds an on-chain Anchor IDL for this program, update the label to the decoded error."
+      "detail": "No error text in logs; program has no on-chain IDL and no public error table (checked 2026-09-28)."
+    }
   },
   {
     "id": "case22",
@@ -453,11 +454,11 @@
       "funds_moved_beyond_fee": false,
       "cause": "never reached the chain: no funds moved, no fee charged; cause not provable"
     },
-    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way.",
     "evidence": {
       "kind": "rpc",
       "detail": "getTransaction returned null"
-    }
+    },
+    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way."
   },
   {
     "id": "case23",
@@ -474,16 +475,16 @@
       "funds_moved_beyond_fee": false,
       "cause": "never reached the chain: no funds moved, no fee charged; cause not provable"
     },
-    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way.",
     "evidence": {
       "kind": "rpc",
       "detail": "getTransaction returned null"
-    }
+    },
+    "notes": "Synthetic: well-formed random signature, never submitted. A real stale-blockhash tx is never stored on chain, so getTransaction returns null either way."
   },
   {
     "id": "case24",
     "category": "succeeded",
-    "signature": "3r2FAqZWeb1CRJgwKhPqjM3xzop9bMXCaxEG5VZTgUwiwJAaVGdpdisMwDRYZyTVUAkrecET2ZCmoK4vsX3TF5qA",
+    "signature": "37As5ht6VACGBy5xeBcohY8Wh5FtxDfxNBHNCAzdeUZVPqUXo1525vdb96LQSfpth6wKy6t9qhE9urLB5GkkGbtJ",
     "label_status": "verified",
     "expected": {
       "found": true,
@@ -493,17 +494,17 @@
       "custom_code": null,
       "error_name": null,
       "funds_moved_beyond_fee": true,
-      "cause": "succeeded: Jupiter SOL/USDC swap; must not be described as failed"
+      "cause": "succeeded: Jupiter SOL->token swap; must not be described as failed"
     },
     "evidence": {
       "kind": "meta",
-      "detail": "meta.err is null; token balances changed"
+      "detail": "meta.err is null; balances changed"
     }
   },
   {
     "id": "case25",
     "category": "succeeded",
-    "signature": "4SXpCu8AfGWhgytZP7YXRkic2wkvGXSWXSgzNvyYM7RRyqNHrWomozH4fFiF9w1XBiTnBowX4TJZhRCH5DfkGtzk",
+    "signature": "4rR4ovK6U39sE16oFNwTgLEENPo2YdSosm2ZiiHvkQdK8qEpr7k5HCkdi8qHQPagTN5hPxBbHUuRdbWKeE8wt7Wd",
     "label_status": "verified",
     "expected": {
       "found": true,
@@ -513,11 +514,11 @@
       "custom_code": null,
       "error_name": null,
       "funds_moved_beyond_fee": true,
-      "cause": "succeeded: Jupiter USDC swap; must not be described as failed"
+      "cause": "succeeded: Jupiter USDC->token swap; must not be described as failed"
     },
     "evidence": {
       "kind": "meta",
-      "detail": "meta.err is null; token balances changed"
+      "detail": "meta.err is null; balances changed"
     }
   }
 ]
