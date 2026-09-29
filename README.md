@@ -168,6 +168,21 @@ numbers in the table above (restore it with `git checkout eval/results.json`).
 Groq's free tier allows 8,000 tokens per minute for this model. If the baseline
 arm is skipped with a 429 error, wait a minute and run it again.
 
+## Deploy
+
+The API and the web UI deploy separately.
+
+**API on Render.** `render.yaml` is a Render Blueprint: in the Render dashboard
+choose **New → Blueprint**, connect this repo, and paste your `GROQ_API_KEY`
+when asked. Render builds with `uv sync --frozen --no-dev` and starts
+`uvicorn rektopsy.api:app`. Check `https://<your-service>.onrender.com/health`.
+On Render's free plan the service sleeps after 15 minutes without traffic and
+takes up to a minute to wake, so open `/health` before a demo.
+
+**Web UI on Vercel.** Import the repo, set **Root Directory** to `web`, and add
+the environment variable `NEXT_PUBLIC_API_URL=https://<your-service>.onrender.com`
+before the first build. It is baked in at build time, so redeploy after changing it.
+
 ## Configuration
 
 | variable | default | purpose |

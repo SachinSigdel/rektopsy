@@ -1,0 +1,28 @@
+# Render Blueprint for the Rektopsy API (FastAPI). The web UI deploys separately on
+# Vercel (root directory: web) with NEXT_PUBLIC_API_URL set to this service's URL.
+#
+# Render picks Python from .python-version (3.11) and adds uv because uv.lock exists.
+services:
+  - type: web
+    name: rektopsy-api
+    runtime: python
+    plan: free
+    buildCommand: uv sync --frozen --no-dev
+    startCommand: .venv/bin/uvicorn rektopsy.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      # Free key from console.groq.com. Render asks for it when you create the Blueprint.
+      # Without it the API still works, with template prose instead of LLM prose.
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SOLANA_RPC_URL
+        value: https://api.mainnet-beta.solana.com
+      # "*" lets the embeddable widget run on any site. To lock the API to the
+      # web UI only, set this to the Vercel URL (comma-separate several).
+      - key: REKTOPSY_CORS_ORIGINS
+        value: "*"
+      # Use Render's own Python (from .python-version) instead of downloading one,
+      # so the .venv built at build time still works at run time.
+      - key: UV_PYTHON_PREFERENCE
+        value: only-system
