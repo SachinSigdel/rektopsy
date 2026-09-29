@@ -40,6 +40,7 @@ function label(key: string): string {
     ["_sol", " (SOL)"],
     ["_pct", " (%)"],
     ["_bps", " (bps)"],
+    ["_lamports", " (lamports)"],
   ];
   let suffix = "";
   for (const [end, unit] of units) {
@@ -152,7 +153,7 @@ function Report({ result }: { result: Result }) {
         <p>{result.cause}</p>
       </Section>
 
-      {result.fix && (
+      {failed && result.fix && (
         <Section title="The fix" tone="fix">
           <p>{result.fix}</p>
           {values.length > 0 && (

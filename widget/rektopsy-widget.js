@@ -94,7 +94,8 @@
 
   // "would_receive_raw" -> "Would receive (raw units)"
   function label(key) {
-    const units = [["_raw", " (raw units)"], ["_sol", " (SOL)"], ["_pct", " (%)"], ["_bps", " (bps)"]];
+    const units = [["_raw", " (raw units)"], ["_sol", " (SOL)"], ["_pct", " (%)"], ["_bps", " (bps)"],
+                   ["_lamports", " (lamports)"]];
     let suffix = "";
     for (const [end, unit] of units) {
       if (key.endsWith(end)) { key = key.slice(0, -end.length); suffix = unit; break; }
@@ -188,7 +189,7 @@
       const values = Object.entries(fix.values || {}).filter(([, v]) => v !== null && v !== "");
       const logLines = r.log_lines || {};
 
-      const fixSection = r.fix
+      const fixSection = failed && r.fix
         ? h("section", { class: "fix" }, h("h3", {}, "The fix"), h("p", {}, r.fix),
             values.length
               ? h("dl", {}, ...values.map(([k, v]) => h("div", {}, h("dt", {}, label(k)), h("dd", {}, String(v)))))
