@@ -1,7 +1,7 @@
 [project]
 name = "rektopsy"
 version = "0.1.0"
-description = "Add your description here"
+description = "Explain why a Solana transaction failed: cause, fix, funds safety, with evidence"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.141.1",
