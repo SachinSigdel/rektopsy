@@ -17,7 +17,7 @@ from .verify import unsupported_numbers
 load_dotenv()
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 
 SYSTEM_PROMPT = """You explain failed Solana transactions to people who are new to crypto.
 You get a JSON brief of facts that were extracted from the chain. Write three short fields:
@@ -41,8 +41,11 @@ def complete(messages: list[dict]) -> tuple[str, dict]:
     key = os.environ.get("GROQ_API_KEY")
     if not key:
         raise LLMUnavailable("GROQ_API_KEY not set")
-    body = {"model": os.environ.get("GROQ_MODEL") or DEFAULT_MODEL, "messages": messages,
+    model = os.environ.get("GROQ_MODEL") or DEFAULT_MODEL
+    body = {"model": model, "messages": messages,
             "temperature": 0, "response_format": {"type": "json_object"}}
+    if "gpt-oss" in model:
+        body["reasoning_effort"] = "low"  # reasoning tokens count toward tokens-per-autopsy
     for delay in (2, 4, 8, 16, 0):
         resp = httpx.post(GROQ_URL, json=body, headers={"Authorization": f"Bearer {key}"}, timeout=60)
         if resp.status_code != 429:

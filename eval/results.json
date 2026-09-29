@@ -4,10 +4,19 @@
       "cases": 25,
       "correct_cause_pct": 100.0,
       "hallucinated_numbers": 0,
-      "fix_usefulness_avg": null,
-      "fix_usefulness_scored": 0,
-      "median_latency_ms": 0,
-      "median_tokens": 0
+      "fix_usefulness_avg": 1.88,
+      "fix_usefulness_scored": 25,
+      "median_latency_ms": 2885,
+      "median_tokens": 763
+    },
+    "baseline": {
+      "cases": 25,
+      "correct_cause_pct": 88.0,
+      "hallucinated_numbers": 8,
+      "fix_usefulness_avg": 1.04,
+      "fix_usefulness_scored": 25,
+      "median_latency_ms": 15115,
+      "median_tokens": 1890
     }
   },
   "pipeline": [
@@ -18,12 +27,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 1,
-      "tokens": 0,
-      "cause": "Jupiter Aggregator v6 stopped the transaction: Slippage tolerance exceeded.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value (slippage bps: 50, slippage pct: 0.5, suggested slippage bps: 100, suggested slippage pct: 1, quoted out raw: 2956296, minimum out raw: 2941514).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000019 SOL)."
+      "mode": "llm",
+      "latency_ms": 871,
+      "tokens": 784,
+      "cause": "The transaction failed because the slippage tolerance was exceeded in the Jupiter Aggregator v6 program.",
+      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value of 100 bps (1%).",
+      "funds": "Your money is safe; only the network fee of 19000 lamports was charged."
     },
     {
       "id": "case02",
@@ -32,12 +41,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 1,
-      "tokens": 0,
-      "cause": "Jupiter Aggregator v6 stopped the transaction: Slippage tolerance exceeded.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value (slippage bps: 500, slippage pct: 5, suggested slippage bps: 300, suggested slippage pct: 3, quoted out raw: 41318858114356, minimum out raw: 39252915208638).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000455 SOL)."
+      "mode": "llm",
+      "latency_ms": 695,
+      "tokens": 778,
+      "cause": "The transaction failed because the slippage tolerance was exceeded in the Jupiter Aggregator v6 program.",
+      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value of 300 bps (3%).",
+      "funds": "Your funds are safe; only the network fee of 0.000455 SOL was charged."
     },
     {
       "id": "case03",
@@ -46,12 +55,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "Meteora DAMM v2 stopped the transaction: Exceeded slippage tolerance.",
+      "mode": "llm",
+      "latency_ms": 822,
+      "tokens": 704,
+      "cause": "The transaction failed because the price moved beyond the slippage tolerance set for the Meteora DAMM v2 program.",
       "fix": "Get a fresh quote and retry; if it keeps failing, raise your slippage setting.",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000005 SOL)."
+      "funds": "Your funds are safe; only the network fee of 5000 lamports (0.000005 SOL) was charged."
     },
     {
       "id": "case04",
@@ -60,12 +69,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "pump.fun stopped the transaction: slippage: Too much SOL required to buy the given amount of tokens.",
-      "fix": "Retry with a fresh quote, or raise the maximum you are willing to pay (over by pct of maximum: 2026.39, your maximum sol: 4, needed sol: 85.055426047, over by sol: 81.055426047).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.00001 SOL)."
+      "mode": "llm",
+      "latency_ms": 3655,
+      "tokens": 783,
+      "cause": "The transaction failed because pump.fun required more SOL than your maximum limit (TooMuchSolRequired).",
+      "fix": "Retry with a fresh quote or increase your maximum payment to at least 85055426047 lamports (85.055426047 SOL).",
+      "funds": "Your funds are safe; only the network fee of 10000 lamports (0.00001 SOL) was charged."
     },
     {
       "id": "case05",
@@ -74,12 +83,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "pump.fun stopped the transaction: slippage: Too little SOL received to sell the given amount of tokens.",
-      "fix": "Retry with a fresh quote, or lower the minimum you accept (shortfall pct of minimum: 12, would receive sol: 0.014607347, your minimum sol: 0.016598364, shortfall sol: 0.001991017).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000009 SOL)."
+      "mode": "llm",
+      "latency_ms": 879,
+      "tokens": 798,
+      "cause": "The transaction failed because the pump.fun program received less SOL than the minimum you set (TooLittleSolReceived).",
+      "fix": "Retry with a fresh quote or lower the minimum you accept; you would have received 14607347 lamports (0.014607347 SOL) but your minimum was 16598364 lamports (0.016598364 SOL).",
+      "funds": "Your funds are safe; only the network fee of 9000 lamports (0.000009 SOL) was charged."
     },
     {
       "id": "case06",
@@ -88,12 +97,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "Raydium AMM v4 stopped the transaction: AMM error: Exceeded desired slippage limit.",
+      "mode": "llm",
+      "latency_ms": 831,
+      "tokens": 702,
+      "cause": "The transaction failed because the Raydium AMM v4 program exceeded the desired slippage limit.",
       "fix": "Get a fresh quote and retry; if it keeps failing, raise your slippage setting.",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000071794 SOL)."
+      "funds": "Your money is safe; only the network fee of 71794 lamports was charged."
     },
     {
       "id": "case07",
@@ -102,12 +111,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "PumpSwap AMM stopped the transaction: buy: slippage - would buy less tokens than expected min_base_amount_out.",
-      "fix": "Retry with a fresh quote, or lower the minimum you accept (would receive raw: 914404558890, your minimum raw: 992769252057, shortfall raw: 78364693167, shortfall pct of minimum: 7.89).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.00051 SOL)."
+      "mode": "llm",
+      "latency_ms": 836,
+      "tokens": 777,
+      "cause": "The PumpSwap AMM transaction failed because the slippage would have resulted in buying fewer tokens than your minimum amount (min_base_amount_out).",
+      "fix": "Retry with a fresh quote, or lower the minimum you accept. Your quote would have received 914404558890, but your minimum was 992769252057, a shortfall of 78364693167 (7.89%).",
+      "funds": "Your money is safe; only the network fee of 510000 lamports (0.00051 SOL) was charged."
     },
     {
       "id": "case08",
@@ -116,12 +125,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi stopped the transaction: the transaction ran out of compute units.",
-      "fix": "Raise the compute unit limit (SetComputeUnitLimit) and resend (consumed cu: 132439, new cu limit: 198000, current cu limit: 132439, unit price micro lamports: 20000, new max priority fee lamports: 3960, new max priority fee sol: 0.00000396).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000007649 SOL)."
+      "mode": "llm",
+      "latency_ms": 874,
+      "tokens": 813,
+      "cause": "The transaction ran out of compute units while being processed by Jupiter Aggregator v6 (calling program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi).",
+      "fix": "Raise the compute unit limit to 198000 (SetComputeUnitLimit) and resend the transaction.",
+      "funds": "Your funds are safe; only the network fee of 7649 lamports (0.000007649 SOL) was charged."
     },
     {
       "id": "case09",
@@ -130,12 +139,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq stopped the transaction: the transaction ran out of compute units.",
-      "fix": "Raise the compute unit limit (SetComputeUnitLimit) and resend (consumed cu: 132320, new cu limit: 198000, current cu limit: 132320, unit price micro lamports: 20000, new max priority fee lamports: 3960, new max priority fee sol: 0.00000396).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000007647 SOL)."
+      "mode": "llm",
+      "latency_ms": 1020,
+      "tokens": 880,
+      "cause": "The transaction ran out of compute units while executing program HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq, called by Jupiter Aggregator v6.",
+      "fix": "Raise the compute unit limit to 198000 (SetComputeUnitLimit) and resend, which also sets the max priority fee to 3960 lamports (0.00000396 SOL).",
+      "funds": "Your funds are safe; only the network fee of 7647 lamports (0.000007647 SOL) was charged."
     },
     {
       "id": "case10",
@@ -144,12 +153,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "pump.fun stopped the transaction: the transaction ran out of compute units.",
-      "fix": "Raise the compute unit limit (SetComputeUnitLimit) and resend (consumed cu: 101617, new cu limit: 152000, current cu limit: 101617).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000005 SOL)."
+      "mode": "llm",
+      "latency_ms": 774,
+      "tokens": 690,
+      "cause": "The transaction ran out of compute units while calling the pump.fun program.",
+      "fix": "Raise the compute unit limit to 152000 and resend the transaction.",
+      "funds": "Your money is safe; only the 5000 lamport network fee was charged."
     },
     {
       "id": "case11",
@@ -158,12 +167,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "System Program stopped the transaction: Transfer: insufficient lamports 914528, need 987653.",
-      "fix": "Add SOL to the wallet and resend (have lamports: 914528, need lamports: 987653, short lamports: 73125, have sol: 0.000914528, need sol: 0.000987653, short sol: 0.000073125).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000105 SOL)."
+      "mode": "llm",
+      "latency_ms": 801,
+      "tokens": 763,
+      "cause": "The System Program tried to transfer but only had 914528 lamports, which is less than the required 987653 lamports.",
+      "fix": "Add SOL to the wallet and resend, covering the shortfall of 73125 lamports (0.000073125 SOL).",
+      "funds": "Your funds are safe; only the network fee of 105000 lamports (0.000105 SOL) was charged."
     },
     {
       "id": "case12",
@@ -172,12 +181,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "System Program stopped the transaction: Transfer: insufficient lamports 7361293, need 10000000.",
-      "fix": "Add SOL to the wallet and resend (have lamports: 7361293, need lamports: 10000000, short lamports: 2638707, have sol: 0.007361293, need sol: 0.01, short sol: 0.002638707).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.001004999 SOL)."
+      "mode": "llm",
+      "latency_ms": 833,
+      "tokens": 786,
+      "cause": "The System Program tried to transfer but only had 7361293 lamports, which is 2638707 lamports short of the required 10000000 lamports.",
+      "fix": "Add SOL to the wallet (at least 2638707 lamports, i.e., 0.002638707 SOL) and resend the transaction.",
+      "funds": "Your money is safe; only the network fee of 1004999 lamports (0.001004999 SOL) was charged."
     },
     {
       "id": "case13",
@@ -186,12 +195,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "SPL Token stopped the transaction: Error: insufficient funds.",
-      "fix": "The account didn't hold enough of this token for the transfer; lower the amount or top up (need: 2614567.182097, have: 1891633.832874, short: 722933.349223).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.00001005 SOL)."
+      "mode": "llm",
+      "latency_ms": 2995,
+      "tokens": 834,
+      "cause": "The transaction failed because the SPL Token program (called by PumpSwap AMM) reported insufficient funds for the transfer.",
+      "fix": "Top up the account or lower the transfer amount; you need 2614567182097 raw units (2614567.182097) but only have 1891633832874 raw units (1891633.832874), short by 722933349223 raw units (722933.349223).",
+      "funds": "Your funds are safe; only the network fee of 10050 lamports (0.00001005 SOL) was charged."
     },
     {
       "id": "case14",
@@ -200,12 +209,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "SPL Token-2022 stopped the transaction: Error: insufficient funds.",
-      "fix": "The account didn't hold enough of this token for the transfer; lower the amount or top up (need: 220288.277176, have: 1.892113, short: 220286.385063).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000013111 SOL)."
+      "mode": "llm",
+      "latency_ms": 7319,
+      "tokens": 867,
+      "cause": "The transaction failed because the SPL Token-2022 program (called by Meteora Dynamic Bonding Curve) did not have enough tokens to cover the transfer, resulting in an InsufficientFunds error.",
+      "fix": "Top up the account or lower the transfer amount; the needed amount was 220288277176 raw units (220288.277176), but the account only had 1892113 raw units (1.892113), short by 220286385063 raw units (220286.385063).",
+      "funds": "Your funds are safe; only the network fee of 13111 lamports (0.000013111 SOL) was charged."
     },
     {
       "id": "case15",
@@ -214,12 +223,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "SPL Token stopped the transaction: Error: insufficient funds.",
-      "fix": "The account didn't hold enough of this token for the transfer; lower the amount or top up (need: 0.359806).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000011708 SOL)."
+      "mode": "llm",
+      "latency_ms": 7084,
+      "tokens": 742,
+      "cause": "The SPL Token program reported insufficient funds for the transfer.",
+      "fix": "Lower the transfer amount or top up the account; you need at least 359806 units (0.359806) of the token.",
+      "funds": "Your money is safe; only the network fee of 11708 lamports (0.000011708 SOL) was charged."
     },
     {
       "id": "case16",
@@ -228,12 +237,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "pump.fun stopped the transaction: The program expected this account to be already initialized.",
-      "fix": "The account named here doesn't exist yet. For a token account that usually means the wallet doesn't hold that token; create the token account or check you're using the right wallet (account name: associated_user).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.0000149 SOL)."
+      "mode": "llm",
+      "latency_ms": 7124,
+      "tokens": 714,
+      "cause": "The pump.fun program expected the associated_user account to already be initialized, but it was not found.",
+      "fix": "Create the associated_user token account (or ensure you are using the correct wallet) before retrying.",
+      "funds": "Your money is safe; only the network fee of 0.0000149 SOL was charged."
     },
     {
       "id": "case17",
@@ -242,12 +251,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "pump.fun stopped the transaction: The program expected this account to be already initialized.",
-      "fix": "The account named here doesn't exist yet. For a token account that usually means the wallet doesn't hold that token; create the token account or check you're using the right wallet (account name: associated_user).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000013 SOL)."
+      "mode": "llm",
+      "latency_ms": 2970,
+      "tokens": 709,
+      "cause": "The pump.fun program expected the associated_user account to already exist, but it was not initialized.",
+      "fix": "Create the associated_user token account (or ensure you are using the correct wallet that holds the token).",
+      "funds": "Your money is safe; only the network fee of 0.000013 SOL was charged."
     },
     {
       "id": "case18",
@@ -256,12 +265,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "Raydium CLMM stopped the transaction: The program expected this account to be already initialized.",
-      "fix": "The account named here doesn't exist yet. For a token account that usually means the wallet doesn't hold that token; create the token account or check you're using the right wallet (account name: recipient_token_account_1).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000205 SOL)."
+      "mode": "llm",
+      "latency_ms": 2904,
+      "tokens": 735,
+      "cause": "The Raydium CLMM program expected the token account recipient_token_account_1 to already exist, but it was not initialized.",
+      "fix": "Create the token account named recipient_token_account_1 (or use the correct wallet that holds the token).",
+      "funds": "Your funds are safe; only the network fee of 205000 lamports was charged."
     },
     {
       "id": "case19",
@@ -270,12 +279,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "The program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc returned error code 1004, which we could not identify.",
-      "fix": "We can't decode this error, so we won't guess. Ask the app or program's support about the error code below (custom code: 1004).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000006129 SOL)."
+      "mode": "llm",
+      "latency_ms": 3037,
+      "tokens": 742,
+      "cause": "The error could not be identified; the program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc returned custom code 1004.",
+      "fix": "Ask the app or program's support about the error code 1004 for program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc.",
+      "funds": "Your money is safe; only the network fee of 6129 lamports (0.000006129 SOL) was charged."
     },
     {
       "id": "case20",
@@ -284,12 +293,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "The program CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y returned error code 43008, which we could not identify.",
-      "fix": "We can't decode this error, so we won't guess. Ask the app or program's support about the error code below (custom code: 43008).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.000006463 SOL)."
+      "mode": "llm",
+      "latency_ms": 7412,
+      "tokens": 935,
+      "cause": "The transaction failed with an unknown custom error code 43008 from program CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y; the error could not be identified.",
+      "fix": "Ask the app or program's support about the error code 43008 for program CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y.",
+      "funds": "Your funds are safe; you only paid a fee of 6463 lamports (0.000006463 SOL)."
     },
     {
       "id": "case21",
@@ -298,12 +307,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 1,
-      "tokens": 0,
-      "cause": "The program A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj returned error code 0, which we could not identify.",
-      "fix": "We can't decode this error, so we won't guess. Ask the app or program's support about the error code below (custom code: 0).",
-      "funds": "The transaction failed, so every change was rolled back; only the network fee was charged (fee: 0.00000595 SOL)."
+      "mode": "llm",
+      "latency_ms": 3003,
+      "tokens": 775,
+      "cause": "The error could not be identified; the program A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj returned an unknown custom error code 0.",
+      "fix": "Ask the app or program's support about the error code below; custom_code is 0 and program is A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj.",
+      "funds": "Your money is safe; only the network fee of 5950 lamports (0.00000595 SOL) was charged."
     },
     {
       "id": "case22",
@@ -312,12 +321,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "The transaction never reached the chain.",
-      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app), and check the wallet has enough SOL for the fee.",
-      "funds": "Nothing happened on chain: no funds moved and no fee was charged."
+      "mode": "llm",
+      "latency_ms": 2993,
+      "tokens": 593,
+      "cause": "The transaction never reached the chain, so it didn\u2019t execute at all.",
+      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL for the fee.",
+      "funds": "Your money is safe; no funds moved and no fee was charged."
     },
     {
       "id": "case23",
@@ -326,12 +335,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
-      "cause": "The transaction never reached the chain.",
-      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app), and check the wallet has enough SOL for the fee.",
-      "funds": "Nothing happened on chain: no funds moved and no fee was charged."
+      "mode": "llm",
+      "latency_ms": 2885,
+      "tokens": 598,
+      "cause": "The transaction never reached the chain, so it didn\u2019t execute at all.",
+      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL for the fee.",
+      "funds": "Your money is safe; no funds moved and no fee was charged."
     },
     {
       "id": "case24",
@@ -340,12 +349,12 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
+      "mode": "llm",
+      "latency_ms": 8638,
+      "tokens": 516,
       "cause": "The transaction succeeded; nothing failed.",
       "fix": "",
-      "funds": "It ran as intended."
+      "funds": "Your money is safe and the fee was 10494 lamports (0.000010494 SOL)."
     },
     {
       "id": "case25",
@@ -354,12 +363,326 @@
       "correct": true,
       "hallucinated": [],
       "first_attempt_rejected": false,
-      "mode": "template",
-      "latency_ms": 0,
-      "tokens": 0,
+      "mode": "llm",
+      "latency_ms": 661,
+      "tokens": 525,
       "cause": "The transaction succeeded; nothing failed.",
-      "fix": "",
-      "funds": "It ran as intended."
+      "fix": "No changes needed.",
+      "funds": "Your money is safe and the fee was 24057 lamports (0.000024057 SOL)."
+    }
+  ],
+  "baseline": [
+    {
+      "id": "case01",
+      "expected": "slippage",
+      "predicted": "insufficient_funds",
+      "correct": false,
+      "hallucinated": [],
+      "latency_ms": 31584,
+      "tokens": 4434,
+      "cause": "The transaction failed with a custom program error 0x1771 (decimal 6001) from the token program, which indicates that the source account did not have enough tokens to cover the requested transfer/swap amount.",
+      "fix": "Ensure the source token account holds sufficient balance for the operation (or lower the amount/slippage tolerance). If the transaction involves a swap, add more input tokens or adjust the swap parameters.",
+      "funds": "Add the required amount of tokens to the source account before retrying the transaction."
+    },
+    {
+      "id": "case02",
+      "expected": "slippage",
+      "predicted": "unknown_custom",
+      "correct": false,
+      "hallucinated": [],
+      "latency_ms": 31433,
+      "tokens": 3539,
+      "cause": "The transaction failed at instruction index 7 with a custom program error code 6001. This is not a standard Solana error, so it likely originates from the specific program (e.g., a DEX or custom token program) indicating a condition such as insufficient liquidity, invalid parameters, or a failed internal check.",
+      "fix": "Check the documentation of the program that returned error 6001. Common fixes include: ensure the input amounts meet the program\u2019s minimums, verify that the token accounts are correctly initialized and have enough balance, and confirm that any required approvals or whitelist entries are in place. Adjust the transaction parameters accordingly and retry.",
+      "funds": "455000"
+    },
+    {
+      "id": "case03",
+      "expected": "slippage",
+      "predicted": "slippage",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 2852,
+      "tokens": 1270,
+      "cause": "The transaction failed with a custom error 6002 (ExceededSlippage), meaning the actual swap price moved beyond the slippage tolerance you set.",
+      "fix": "Lower the slippage tolerance in your swap parameters or try the transaction again when the market price is more stable. Ensure the pool has enough liquidity for the desired amount.",
+      "funds": "The fee of 5000 lamports was deducted; no other funds were transferred."
+    },
+    {
+      "id": "case04",
+      "expected": "slippage",
+      "predicted": "slippage",
+      "correct": true,
+      "hallucinated": [
+        "85"
+      ],
+      "latency_ms": 15198,
+      "tokens": 1818,
+      "cause": "The transaction failed with a custom error 6002 (TooMuchSolRequired). The program detected that the amount of SOL required to buy the requested tokens (\u224885,055,426,047 lamports) far exceeds the SOL supplied (\u22484,000,000,000 lamports).",
+      "fix": "Reduce the amount of tokens you are trying to buy or increase the slippage tolerance/maximum SOL you are willing to spend. Ensure the transaction includes enough SOL to cover the price plus a safety margin.",
+      "funds": "Required \u224885,055,426,047 lamports (~85 SOL) but only \u22484,000,000,000 lamports (~4 SOL) were provided."
+    },
+    {
+      "id": "case05",
+      "expected": "slippage",
+      "predicted": "slippage",
+      "correct": true,
+      "hallucinated": [
+        "0.0146",
+        "0.0166"
+      ],
+      "latency_ms": 15301,
+      "tokens": 1342,
+      "cause": "The transaction failed because the amount of SOL received was lower than the minimum required for the sell operation (error code 6003 \u2013 TooLittleSolReceived). The program detected that the left value (14,607,347 lamports) was less than the right value (16,598,364 lamports) and threw a slippage error.",
+      "fix": "Increase the slippage tolerance or lower the minimum SOL amount expected from the sell. Ensure the price impact is acceptable or provide a larger input amount so the received SOL meets the required threshold.",
+      "funds": "Received: 14,607,347 lamports (~0.0146 SOL) \u2013 Required minimum: 16,598,364 lamports (~0.0166 SOL)."
+    },
+    {
+      "id": "case06",
+      "expected": "slippage",
+      "predicted": "slippage",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 757,
+      "tokens": 614,
+      "cause": "The AMM program returned a custom error 30 (0x1e) indicating that the trade exceeded the desired slippage limit set by the user.",
+      "fix": "Reduce the slippage tolerance in the transaction parameters or adjust the trade size/price to stay within the allowed slippage range. Re\u2011submit the transaction after updating these values.",
+      "funds": "The transaction consumed the fee of 71,794 lamports before failing; no additional funds were transferred."
+    },
+    {
+      "id": "case07",
+      "expected": "slippage",
+      "predicted": "slippage",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 15067,
+      "tokens": 2056,
+      "cause": "The swap failed because the output amount was lower than the minimum acceptable amount (BuySlippageBelowMinBaseAmountOut, custom error 6040). The logs show left=914404558890 and right=992769252057, indicating the actual amount received was less than the required minimum.",
+      "fix": "Increase the slippage tolerance or adjust the min_base_amount_out parameter when constructing the swap instruction. Ensure the market price hasn't moved significantly between quote and execution, or try the transaction again later when liquidity is better.",
+      "funds": "510000"
+    },
+    {
+      "id": "case08",
+      "expected": "compute_budget",
+      "predicted": "compute_budget",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 15150,
+      "tokens": 2011,
+      "cause": "The transaction ran out of compute units during instruction 5 (ComputationalBudgetExceeded).",
+      "fix": "Increase the compute budget request (e.g., add a ComputeBudgetProgram instruction with a higher max units) or simplify the transaction to use fewer compute units.",
+      "funds": "7649"
+    },
+    {
+      "id": "case09",
+      "expected": "compute_budget",
+      "predicted": "compute_budget",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 15122,
+      "tokens": 1967,
+      "cause": "The transaction ran out of compute units (CUs) during the final swap instruction, causing a BPF instruction meter overflow.",
+      "fix": "Increase the compute budget request (e.g., via a ComputeBudgetProgram instruction) or simplify the transaction to use fewer CUs. Ensure any inner instructions are optimized.",
+      "funds": "7647"
+    },
+    {
+      "id": "case10",
+      "expected": "compute_budget",
+      "predicted": "compute_budget",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 14908,
+      "tokens": 1974,
+      "cause": "The transaction ran out of compute units during the final instruction, triggering a ComputationalBudgetExceeded error.",
+      "fix": "Increase the compute budget request (e.g., add a ComputeBudgetProgram instruction to request more CU) or simplify/optimize the transaction logic to use fewer compute units.",
+      "funds": "5000"
+    },
+    {
+      "id": "case11",
+      "expected": "insufficient_funds",
+      "predicted": "insufficient_funds",
+      "correct": true,
+      "hallucinated": [
+        "73,125",
+        "80,000"
+      ],
+      "latency_ms": 15115,
+      "tokens": 1628,
+      "cause": "The transaction failed because the source account didn't have enough lamports to cover the required amount (needs 987,653 lamports but only had 914,528).",
+      "fix": "Fund the source account with at least the missing lamports (\u224873,125 lamports) plus a safety margin before retrying the transaction.",
+      "funds": "Add ~80,000 lamports to the source account to ensure the transfer succeeds."
+    },
+    {
+      "id": "case12",
+      "expected": "insufficient_funds",
+      "predicted": "insufficient_funds",
+      "correct": true,
+      "hallucinated": [
+        "2,638,707",
+        "2.64",
+        "0.00264"
+      ],
+      "latency_ms": 15269,
+      "tokens": 1890,
+      "cause": "The transaction failed because the source account didn't have enough lamports to cover the required transfer (needs 10,000,000 lamports but only had 7,361,293).",
+      "fix": "Fund the source account with at least the missing lamports (\u22482,638,707 lamports) plus the transaction fee, then resend the transaction.",
+      "funds": "Needed\u202f\u2248\u202f2.64\u202fM lamports (\u22480.00264\u202fSOL) additional to cover the shortfall."
+    },
+    {
+      "id": "case13",
+      "expected": "insufficient_funds",
+      "predicted": "insufficient_funds",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 31462,
+      "tokens": 3323,
+      "cause": "The transaction failed at instruction 8 with a custom error code 1 from the SPL Token program, which corresponds to an \"Insufficient funds\" error. This means the source token account did not have enough balance to cover the amount being transferred or the required rent for the new account.",
+      "fix": "Ensure the source token account holds enough tokens for the operation (including any fees or rent-exempt reserves). You may need to top up the account or reduce the amount being swapped. Also verify that any associated token accounts are correctly initialized and funded.",
+      "funds": "Add sufficient tokens to the source account (or the required lamports for rent) before retrying the transaction."
+    },
+    {
+      "id": "case14",
+      "expected": "insufficient_funds",
+      "predicted": "insufficient_funds",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 833,
+      "tokens": 1264,
+      "cause": "The transaction failed because the token program reported an \"insufficient funds\" error during the TransferChecked instruction, causing a custom program error (0x1).",
+      "fix": "Ensure the source token account has enough balance (including any required rent-exempt minimum) to cover the transfer amount plus any fees before retrying the transaction.",
+      "funds": "Add the required token amount to the source account so it can cover the intended transfer."
+    },
+    {
+      "id": "case15",
+      "expected": "insufficient_funds",
+      "predicted": "insufficient_funds",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 31305,
+      "tokens": 2933,
+      "cause": "The transaction failed with a custom program error 0x1 from the SPL Token program, which corresponds to \u201cinsufficient funds\u201d when trying to debit the source token account.",
+      "fix": "Ensure the source token account has enough balance (including rent\u2011exempt reserve) to cover the transfer amount plus any fees. If needed, top up the account or reduce the transfer amount.",
+      "funds": "The fee paid was 11,708 lamports; the transfer amount itself was insufficient, so increase the token balance accordingly."
+    },
+    {
+      "id": "case16",
+      "expected": "account_not_found",
+      "predicted": "account_not_found",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 931,
+      "tokens": 718,
+      "cause": "The transaction failed because the required account 'associated_user' was not initialized, triggering a custom program error (3012).",
+      "fix": "Create and initialize the 'associated_user' account (e.g., via the associated token account creation instruction) before invoking the Sell instruction.",
+      "funds": "14900"
+    },
+    {
+      "id": "case17",
+      "expected": "account_not_found",
+      "predicted": "unknown_custom",
+      "correct": false,
+      "hallucinated": [],
+      "latency_ms": 885,
+      "tokens": 642,
+      "cause": "The transaction failed because the required account 'associated_user' was not initialized before being used in the Sell instruction, triggering a custom program error (code 3012).",
+      "fix": "Initialize the 'associated_user' account (e.g., by creating it with the appropriate PDA or using the program's initialization instruction) before attempting the Sell operation. Ensure the account is funded and has the correct owner and data layout.",
+      "funds": "13000 lamports (transaction fee) were deducted even though the transaction failed."
+    },
+    {
+      "id": "case18",
+      "expected": "account_not_found",
+      "predicted": "account_not_found",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 801,
+      "tokens": 630,
+      "cause": "The transaction failed because the required account `recipient_token_account_1` was not initialized (Anchor error 3012).",
+      "fix": "Create and initialize the recipient token account (e.g., using the associated token account program or an explicit create account instruction) before calling DecreaseLiquidityV2.",
+      "funds": "205000 lamports (transaction fee)"
+    },
+    {
+      "id": "case19",
+      "expected": "unknown_custom",
+      "predicted": "unknown_custom",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 15236,
+      "tokens": 1966,
+      "cause": "The transaction failed at instruction index 3 with a custom program error (code 1004). This indicates the called program (likely the Jupiter aggregator) returned a specific error condition defined by its own logic, not a generic Solana error.",
+      "fix": "Consult the program\u2019s documentation or source code to understand what error code 1004 means (e.g., insufficient liquidity, invalid route, or a parameter mismatch). Adjust the swap parameters, token amounts, or route accordingly, or ensure the involved token accounts are correctly initialized and funded.",
+      "funds": "The transaction consumed the fee of 6,129 lamports before failing."
+    },
+    {
+      "id": "case20",
+      "expected": "unknown_custom",
+      "predicted": "unknown_custom",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 31474,
+      "tokens": 2830,
+      "cause": "The transaction failed with a custom program error 0xa800 (hex). This error is specific to the program invoked (likely the router or swap contract) and indicates a condition the program detected, such as insufficient output amount, price impact limits, or other internal validation. The logs show the failure occurs at the final program call after all compute units were consumed successfully, so the transaction was processed but rejected by the program logic.",
+      "fix": "Check the parameters you passed to the swap/router instruction: ensure the minimum expected output amount (slippage tolerance) is low enough, the token accounts have sufficient balances, and any required approvals are set. If the program documentation lists error 0xa800, follow its guidance (e.g., increase the allowed slippage or provide a larger input amount).",
+      "funds": "The transaction was submitted and the network fee of 6,463 lamports was deducted even though the instruction failed."
+    },
+    {
+      "id": "case21",
+      "expected": "unknown_custom",
+      "predicted": "unknown_custom",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 768,
+      "tokens": 544,
+      "cause": "The program returned a custom error code 0 (0x0), indicating a failure defined by the program's own logic.",
+      "fix": "Review the program's source or documentation to understand what error code 0 represents. Ensure all required accounts, inputs, and preconditions are satisfied before invoking the instruction.",
+      "funds": "5950 lamports (transaction fee)"
+    },
+    {
+      "id": "case22",
+      "expected": "never_landed",
+      "predicted": "never_landed",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 631,
+      "tokens": 280,
+      "cause": "The transaction data is null, indicating it never reached the blockchain or was not recorded.",
+      "fix": "Ensure the transaction is properly signed and submitted to a reliable RPC endpoint; retry if network issues occurred.",
+      "funds": "N/A"
+    },
+    {
+      "id": "case23",
+      "expected": "never_landed",
+      "predicted": "never_landed",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 620,
+      "tokens": 280,
+      "cause": "The transaction data is null, indicating it never reached the blockchain or was not recorded.",
+      "fix": "Ensure the transaction is properly signed and submitted to a reliable RPC endpoint; retry if network issues occurred.",
+      "funds": "N/A"
+    },
+    {
+      "id": "case24",
+      "expected": "succeeded",
+      "predicted": "succeeded",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 15042,
+      "tokens": 2133,
+      "cause": "Transaction executed without errors and all programs reported success.",
+      "fix": "No action needed.",
+      "funds": "10494 lamports fee"
+    },
+    {
+      "id": "case25",
+      "expected": "succeeded",
+      "predicted": "succeeded",
+      "correct": true,
+      "hallucinated": [],
+      "latency_ms": 31249,
+      "tokens": 4134,
+      "cause": "Transaction executed without errors and all programs reported success.",
+      "fix": "No action needed.",
+      "funds": "24057 lamports fee"
     }
   ]
 }

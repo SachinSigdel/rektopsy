@@ -1,0 +1,31 @@
+{
+  "rubric": "2 = right action with the right value, 1 = right direction, no value, 0 = wrong or none. Scored by Claude on 2026-09-29 from eval/results.json (gpt-oss-120b run).",
+  "pipeline": {
+    "case01": 2, "case02": 2, "case03": 1, "case04": 2, "case05": 2, "case06": 1, "case07": 2,
+    "case08": 2, "case09": 2, "case10": 2,
+    "case11": 2, "case12": 2, "case13": 2, "case14": 2, "case15": 2,
+    "case16": 2, "case17": 2, "case18": 2,
+    "case19": 2, "case20": 2, "case21": 2,
+    "case22": 2, "case23": 2,
+    "case24": 1, "case25": 2
+  },
+  "baseline": {
+    "case01": 0, "case02": 0, "case03": 0, "case04": 1, "case05": 1, "case06": 0, "case07": 1,
+    "case08": 1, "case09": 1, "case10": 1,
+    "case11": 2, "case12": 2, "case13": 1, "case14": 1, "case15": 1,
+    "case16": 2, "case17": 2, "case18": 1,
+    "case19": 1, "case20": 0, "case21": 1,
+    "case22": 1, "case23": 1,
+    "case24": 2, "case25": 2
+  },
+  "notes": {
+    "pipeline.case03/06": "says raise slippage but gives no value (Meteora/Raydium slippage args not decoded)",
+    "pipeline.case24": "fix left blank for a successful tx; should say no changes needed",
+    "pipeline.unknown_custom": "honest 'ask support' with the exact code and program counts as the right action",
+    "baseline.case01/02": "wrong cause, generic advice",
+    "baseline.case03/06": "tells the user to LOWER slippage, the wrong direction",
+    "baseline.case20": "guesses slippage for an unidentified error",
+    "baseline.case11/12": "correct shortfall, but computed by the LLM itself",
+    "baseline.case18": "says 'the recipient token account' where the tx has two"
+  }
+}

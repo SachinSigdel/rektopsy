@@ -10,20 +10,9 @@ deterministically from the logs/meta, and return:
 4. Evidence: every claim traced to a log line or meta field
 
 ## Where we left off (2026-09-29)
-Step 3 code is done and committed; the no-LLM eval scores 25/25 causes, 0
-hallucinated numbers (inflated: labels came from the same logs the pipeline
-reads). Next session:
-1. Check `.env` has `GROQ_API_KEY` (user is creating a free key at
-   console.groq.com and pasting it into `.env` themselves; never ask them to
-   paste it in chat). If missing, remind them how.
-2. Run `PYTHONPATH=. uv run python eval/run.py --baseline`. Look at any
-   `rejected` retries and template fallbacks; tune `SYSTEM_PROMPT` if the LLM
-   keeps tripping the number guard.
-3. Hand-score fix usefulness 0-2 for both arms into `eval/fix_scores.json`
-   (`{"pipeline": {"case01": 2, ...}, "baseline": {...}}`). Rubric: 2 = right
-   action with the right value, 1 = right direction, no value, 0 = wrong or none.
-4. Show the user the eval table, then start step 4 (FastAPI).
-Nothing is pushed to GitHub; `gh` isn't installed.
+Step 3 is done: LLM + baseline eval run, fix scores in `eval/fix_scores.json`.
+Now on step 4 (FastAPI). Known small gaps: fix text is blank for succeeded txs
+(case24); Meteora/Raydium slippage values aren't decoded (case03/06 fix has no value).
 The user is a Solana beginner: explain in plain words and back claims with evidence.
 
 ## Core rule (never violate)
@@ -49,8 +38,9 @@ later only to test a proposed fix in a sandbox.
   (no Helius, no key). Respect rate limits; pace requests.
 - **LLM:** **Groq** free tier (`GROQ_API_KEY`), not Anthropic. Keep the LLM call
   behind one small function so the provider is swappable. Model:
-  `llama-3.3-70b-versatile` (override with `GROQ_MODEL`); chosen over gpt-oss
-  because reasoning tokens would inflate tokens-per-autopsy. Report tokens per
+  `openai/gpt-oss-120b` with `reasoning_effort: low` (override with `GROQ_MODEL`).
+  `llama-3.3-70b-versatile` was the first pick but Groq retired it (404,
+  2026-09-29); user chose gpt-oss-120b over qwen3.8-27b. Report tokens per
   autopsy instead of cost.
 - **Never-landed txs** (stale blockhash, can't pay fee): `getTransaction` returns
   null. Return a "never reached the chain, no funds moved, no fee charged"
@@ -117,13 +107,16 @@ Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
    "Account not found" uses Anchor `AccountNotInitialized` (3012), since real
    `AccountNotFound` txs never land (user OK'd). The user will spot-check for
    bot-like wallets once the MVP UI exists.
-3. 🔶 (code done, no-LLM eval 25/25; waiting on GROQ_API_KEY for LLM + baseline
-   arms and fix scores in `eval/fix_scores.json`) `decode.py` (Anchor IDL on-chain → local map → "unknown") + `fixes.py` +
-   `explain.py` + `verify.py`, scored by `eval/run.py`: correct-cause %,
-   hallucinated numbers (must be 0), fix usefulness (hand-scored 0-2), median
-   latency, tokens per autopsy. If decode.py resolves an `unknown_custom`
-   case via an on-chain IDL, relabel it. Baseline arm: raw logs in one prompt to the same
-   Groq model, same 25 cases.
+3. ✅ `decode.py` + `fixes.py` + `explain.py` + `verify.py`, scored by
+   `eval/run.py --baseline` (gpt-oss-120b, 25 cases):
+   | metric | pipeline | baseline (raw logs → same model) |
+   |---|---|---|
+   | correct cause | 100% | 88% |
+   | untraceable numbers | 0 | 8 (1 invented, 7 LLM's own correct math/rounding) |
+   | fix usefulness (0-2) | 1.88 | 1.04 |
+   | median latency | 2.9 s | 15.1 s |
+   | median tokens | 763 | 1890 |
+   Caveat: cause labels came from the same logs the pipeline reads.
 4. FastAPI: `POST /autopsy { signature }`.
 5. Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
    for the fix.
