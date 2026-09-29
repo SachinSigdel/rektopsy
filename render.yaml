@@ -22,7 +22,5 @@ services:
       # web UI only, set this to the Vercel URL (comma-separate several).
       - key: REKTOPSY_CORS_ORIGINS
         value: "*"
-      # Use Render's own Python (from .python-version) instead of downloading one,
-      # so the .venv built at build time still works at run time.
-      - key: UV_PYTHON_PREFERENCE
-        value: only-system
+# Render already sets UV_NO_MANAGED_PYTHON, so uv uses Render's Python from
+# .python-version. Don't also set UV_PYTHON_PREFERENCE: uv rejects the pair.
