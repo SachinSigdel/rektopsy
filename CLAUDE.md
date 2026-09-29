@@ -11,8 +11,10 @@ deterministically from the logs/meta, and return:
 
 ## Where we left off (2026-09-29)
 All 6 build steps are done: API (`rektopsy/api.py`, tests in `tests/`), UI
-(`web/`), widget (`widget/`). Next: deliverables (README with eval table,
-clean-env repro steps, 3-minute demo video), then the user's bot-wallet spot-check. Remaining eval gap: Meteora DAMM v2
+(`web/`), widget (`widget/`). README (with eval table and clean-env steps,
+verified from a fresh clone on 2026-09-29) is done. Next: 3-minute demo video,
+the user's bot-wallet spot-check, then hosting / GitHub remote (ask first).
+Keep the README eval table in sync with `eval/results.json` if numbers change. Remaining eval gap: Meteora DAMM v2
 slippage (case03) shows the user's limits but no new value, since the pool
 doesn't log what the swap needed.
 The user is a Solana beginner: explain in plain words and back claims with evidence.
