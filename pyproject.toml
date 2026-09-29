@@ -3,6 +3,7 @@ name = "rektopsy"
 version = "0.1.0"
 description = "Explain why a Solana transaction failed: cause, fix, funds safety, with evidence"
 requires-python = ">=3.11"
+license = "MIT"
 dependencies = [
     "fastapi>=0.141.1",
     "httpx>=0.28.1",

@@ -200,3 +200,7 @@ tests/      offline API tests
 web/        Next.js + Tailwind UI (designs/ holds the HTML mockups it follows)
 widget/     embeddable <rektopsy-autopsy> element + demo page
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).

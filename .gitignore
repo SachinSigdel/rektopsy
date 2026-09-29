@@ -1,8 +1,42 @@
+# Secrets: real keys live in .env, never committed. .env.example is the template.
+.env
+.env.*
+!.env.example
+
+# Python
 .venv/
 __pycache__/
-*.pyc
-.env
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Local caches (fetched transactions, on-chain IDLs). Eval snapshots live in eval/fixtures/.
 .cache/
+
+# Node / Next.js (web/.gitignore covers the details)
 node_modules/
 .next/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+.pnpm-debug.log*
+
+# Editors and OS
 .DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# AI-assistant working notes and agent instructions (local only)
+CLAUDE.md
+AGENTS.md
+.claude/
