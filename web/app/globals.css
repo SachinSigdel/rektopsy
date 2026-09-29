@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* Always dark. Orange marks the failure, teal marks the fix. */
+:root {
+  --bg: #0c0b0a;
+  --surface: #151311;
+  --surface-2: #1d1a17;
+  --line: #2b2723;
+  --text: #ece6df;
+  --muted: #9a9187;
+  --fail: #ff7a3d;
+  --fail-soft: #ff7a3d1f;
+  --fix: #2ed3b7;
+  --fix-soft: #2ed3b71c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-fail: var(--fail);
+  --color-fail-soft: var(--fail-soft);
+  --color-fix: var(--fix);
+  --color-fix-soft: var(--fix-soft);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}

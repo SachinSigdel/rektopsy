@@ -10,8 +10,8 @@ deterministically from the logs/meta, and return:
 4. Evidence: every claim traced to a log line or meta field
 
 ## Where we left off (2026-09-29)
-Steps 3 and 4 are done (API in `rektopsy/api.py`, tests in `tests/`). Step 5
-(Next.js UI in `web/`) is in progress. Remaining eval gap: Meteora DAMM v2
+Steps 3-5 are done: API in `rektopsy/api.py` (tests in `tests/`), UI in `web/`.
+Next: step 6, the embeddable widget. Remaining eval gap: Meteora DAMM v2
 slippage (case03) shows the user's limits but no new value, since the pool
 doesn't log what the swap needed.
 The user is a Solana beginner: explain in plain words and back claims with evidence.
@@ -73,7 +73,11 @@ later only to test a proposed fix in a sandbox.
   400 bad signature, 502 RPC failure, `GET /health`. CORS defaults to `*` (the
   widget runs on other sites); narrow with `REKTOPSY_CORS_ORIGINS`.
 - `tests/`: offline API tests (fixtures stand in for RPC, LLM off).
-- Planned: Next.js UI, widget.
+- `web/`: Next.js 16 + Tailwind 4 UI (one page: `app/page.tsx`, client logic in
+  `app/autopsy.tsx`). Calls `NEXT_PUBLIC_API_URL` (default localhost:8000).
+  Evidence quotes log lines from the API's `log_lines` field. Next 16 ships its
+  own docs in `web/node_modules/next/dist/docs/`; read them before changing APIs.
+- Planned: widget.
 
 ## Solana gotchas learned
 - Most failed Jupiter txs are bots. `discover.is_bot_like`: same mint in and
@@ -91,6 +95,9 @@ later only to test a proposed fix in a sandbox.
 - Meteora DAMM v2 `swap2(amount_0, amount_1, swap_mode)`: ExactIn/PartialFill
   (0/1) = amount_in, minimum_out; ExactOut (2) = amount_out, maximum_in. It logs
   no would-be amounts.
+- Chrome automation: the agent's tab is in a background window, so simulated
+  clicks/typing don't reach the page. Drive the UI via javascript_tool (set the
+  input with the native value setter, then `form.requestSubmit()`).
 - Groq free tier caps gpt-oss-120b at 8000 tokens/min; the baseline arm (~1900
   tokens/case) can hit it right after a pipeline run. Wait a minute and rerun.
 - Real users rarely hit compute limits (wallets simulate first); the two
@@ -105,6 +112,7 @@ PYTHONPATH=. uv run python eval/run.py [--no-llm] [--baseline]
 PYTHONPATH=. uv run python eval/discover.py <program> --match 6001   # find cases
 uv run uvicorn rektopsy.api:app --reload                           # API on :8000
 PYTHONPATH=. uv run pytest -q tests
+cd web && pnpm dev                                                  # UI on :3000
 ```
 Python 3.11 via uv. Scripts outside the package need `PYTHONPATH=.`.
 Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
@@ -133,7 +141,7 @@ Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
    | median tokens | 807 | 1890 |
    Caveat: cause labels came from the same logs the pipeline reads.
 4. ✅ FastAPI: `POST /autopsy { signature }`.
-5. Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
+5. ✅ Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
    for the fix.
 6. Standalone embeddable JS widget.
 

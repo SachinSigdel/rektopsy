@@ -30,7 +30,9 @@ Rules:
 - If category is "unknown_custom", say the error could not be identified; don't speculate.
 - No jargon without a short explanation. No list numbering.
 - Never write the brief's field names (like would_receive_raw); say what they mean in words.
-  "raw" amounts are in the token's smallest unit; call them "raw units".
+  Only fields ending in _raw are "raw units" (a token's smallest unit). Lamports are
+  SOL's smallest unit: never call lamports "raw units". When a value is given in both
+  SOL and lamports, prefer the SOL value.
 Reply with a JSON object: {"cause": "...", "fix": "...", "funds": "..."}"""
 
 
