@@ -65,3 +65,11 @@ def test_widget_is_served(client):
     assert resp.status_code == 200
     assert resp.headers["content-type"].startswith("text/javascript")
     assert "customElements.define" in resp.text
+
+
+def test_autopsy_includes_tx_summary(client):
+    tx = client.post("/autopsy", json={"signature": REFERENCE}).json()["tx"]
+    assert tx["failed_instruction"] == 8
+    assert [s["status"] for s in tx["steps"]][7:] == ["ok", "failed", "not_run"]
+    assert tx["logs"][tx["failure_log"]].endswith("custom program error: 0x1771")
+    assert tx["compute_consumed"] > 0 and tx["programs_touched"] > 0

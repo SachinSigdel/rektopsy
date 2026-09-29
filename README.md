@@ -134,18 +134,26 @@ uv run uvicorn rektopsy.api:app --port 8000
 cd web && cp .env.example .env.local && pnpm install && pnpm dev   # http://localhost:3000
 ```
 
+The UI has two pages: `/` (paste a signature) and `/report?sig=<signature>`,
+which is a shareable link to one autopsy.
+
 **Embeddable widget.** The API serves it, so any site can add:
 
 ```html
 <script src="http://localhost:8000/widget.js" defer></script>
 <rektopsy-autopsy></rektopsy-autopsy>                          <!-- input box -->
-<rektopsy-autopsy signature="..."></rektopsy-autopsy>          <!-- runs on load -->
+<rektopsy-autopsy signature="..." report="http://localhost:3000"></rektopsy-autopsy>
+<script>Rektopsy.attach({ sig, theme: "dark", target: "#help" })</script>
 ```
+
+`signature` runs the autopsy on load; `report` (the web UI's address) adds a
+"Full autopsy" link. The retry button in the widget and the report page is a
+disabled preview: Rektopsy is read-only and never asks for a wallet.
 
 Try it with `python3 -m http.server 8080 --directory widget`, then open
 http://localhost:8080/demo.html. The widget uses a shadow root so host styles
-can't break it, and inserts API data only as text. It fires `rektopsy:result`
-and `rektopsy:error` events.
+can't break it, and inserts API data only as text. It fires `rektopsy:result`,
+`rektopsy:error` and `rektopsy:dismiss` events.
 
 **Tests and eval**
 
@@ -189,6 +197,6 @@ arm is skipped with a 429 error, wait a minute and run it again.
 rektopsy/   Python package: fetch, parse, decode, fixes, verify, explain, pipeline, api, CLI
 eval/       cases.json, fixtures/ (tx JSON + IDL snapshots), run.py, fix_scores.json, results.json
 tests/      offline API tests
-web/        Next.js + Tailwind UI
+web/        Next.js + Tailwind UI (designs/ holds the HTML mockups it follows)
 widget/     embeddable <rektopsy-autopsy> element + demo page
 ```

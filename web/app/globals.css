@@ -1,17 +1,33 @@
 @import "tailwindcss";
 
-/* Always dark. Orange marks the failure, teal marks the fix. */
+/* Palette from designs/*.html. Always dark. Orange = the failure, teal = the fix. */
 :root {
-  --bg: #0c0b0a;
-  --surface: #151311;
-  --surface-2: #1d1a17;
-  --line: #2b2723;
-  --text: #ece6df;
-  --muted: #9a9187;
-  --fail: #ff7a3d;
-  --fail-soft: #ff7a3d1f;
-  --fix: #2ed3b7;
-  --fix-soft: #2ed3b71c;
+  --bg: #0b0c0e;
+  --surface: #141619;
+  --surface-2: #1b1e22;
+  --line: #262a2f;
+  --line-2: #1f2329;
+  --text: #edeae3;
+  --text-2: #c9c5bb;
+  --muted: #9a968c;
+  --faint: #6f6c65;
+  --log: #7e7b73;
+  --fail: #e8703a;
+  --fail-hover: #f28b59;
+  --fail-text: #f0906b;
+  --fail-ink: #150a05;
+  --fail-bg: #2a1410;
+  --fail-border: #5a2a1c;
+  --fail-step-bg: #1b1216;
+  --fail-step-border: #4a241c;
+  --fail-detail: #a98a80;
+  --fix: #4fb3a0;
+  --fix-text: #7fc9ba;
+  --fix-body: #d6dedb;
+  --fix-muted: #7e948f;
+  --fix-ink: #062421;
+  --fix-bg: #10181a;
+  --fix-border: #234641;
 }
 
 @theme inline {
@@ -19,14 +35,30 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-line: var(--line);
+  --color-line-2: var(--line-2);
   --color-text: var(--text);
+  --color-text-2: var(--text-2);
   --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-log: var(--log);
   --color-fail: var(--fail);
-  --color-fail-soft: var(--fail-soft);
+  --color-fail-hover: var(--fail-hover);
+  --color-fail-text: var(--fail-text);
+  --color-fail-ink: var(--fail-ink);
+  --color-fail-bg: var(--fail-bg);
+  --color-fail-border: var(--fail-border);
+  --color-fail-step-bg: var(--fail-step-bg);
+  --color-fail-step-border: var(--fail-step-border);
+  --color-fail-detail: var(--fail-detail);
   --color-fix: var(--fix);
-  --color-fix-soft: var(--fix-soft);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-fix-text: var(--fix-text);
+  --color-fix-body: var(--fix-body);
+  --color-fix-muted: var(--fix-muted);
+  --color-fix-ink: var(--fix-ink);
+  --color-fix-bg: var(--fix-bg);
+  --color-fix-border: var(--fix-border);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
   --font-serif: var(--font-serif);
 }
 
@@ -37,4 +69,20 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
+}
+
+a {
+  color: var(--fail);
+}
+a:hover {
+  color: var(--fail-hover);
+}
+
+/* Small uppercase mono labels used throughout the designs. */
+@utility eyebrow {
+  font-family: var(--font-plex-mono);
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--muted);
 }

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rektopsy — embedded widget</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+body { margin: 0; font-family: "IBM Plex Sans", system-ui, sans-serif; background: #0B0C0E; }
+a { color: #E8703A; } a:hover { color: #F28B59; }
+</style>
+</head>
+<body>
+<div style="width: 460px; height: 660px; box-sizing: border-box; background: #0B0C0E; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-size: 13px; color: #6F6C65">Inside a protocol&rsquo;s own app</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6F6C65">440 &times; 560</span>
+</div>
+
+<div style="flex-grow: 1; background: #141619; border: 1px solid #262A2F; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 18px; color: #EDEAE3">
+
+<div style="display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; align-items: center; gap: 9px">
+<span style="width: 7px; height: 7px; border-radius: 50%; background: #E8703A"></span>
+<span style="font-size: 15px; font-weight: 500">Your swap didn&rsquo;t go through</span>
+</div>
+<button type="button" aria-label="Dismiss" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6F6C65" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+</button>
+</div>
+
+<p style="margin: 0; font-size: 14.5px; line-height: 1.65; color: #C9C5BB">The price moved 1.24% while you were signing, which is more than the 0.5% you allowed. Nothing left your wallet.</p>
+
+<div style="background: #10181A; border: 1px solid #234641; border-radius: 13px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.3px; text-transform: uppercase; color: #7FC9BA">Suggested fix</span>
+<p style="margin: 0; font-size: 14px; line-height: 1.6; color: #D6DEDB">Set slippage to 2% and try again.</p>
+<button type="button" style="height: 46px; background: #4FB3A0; color: #062421; border: none; border-radius: 10px; font-family: inherit; font-size: 14.5px; font-weight: 500; cursor: pointer">Retry with 2%</button>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 9px">
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px"><span style="color: #9A968C">Fee paid</span><span style="font-family: 'IBM Plex Mono', monospace">0.00019 SOL</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px"><span style="color: #9A968C">Tokens lost</span><span style="font-family: 'IBM Plex Mono', monospace; color: #7FC9BA">none</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px"><span style="color: #9A968C">Error</span><span style="font-family: 'IBM Plex Mono', monospace; color: #9A968C">0x1771</span></div>
+</div>
+
+<div style="height: 1px; background: #262A2F"></div>
+
+<div style="display: flex; align-items: center; justify-content: space-between">
+<a href="Report.dc.html" style="font-size: 13.5px; text-decoration: none">Full autopsy &rarr;</a>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6F6C65">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6F6C65" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2 5 4-12 2 7h6"></path></svg>
+Rektopsy
+</span>
+</div>
+</div>
+
+<div style="background: #0F1114; border: 1px solid #1F2329; border-radius: 13px; padding: 14px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; line-height: 1.8; color: #7E7B73">
+<div style="color: #6F6C65">&lt;script src=&quot;rektopsy.js&quot;&gt;&lt;/script&gt;</div>
+<div>Rektopsy.attach({ sig, theme: &quot;dark&quot; })</div>
+</div>
+
+</div>
+</body>
+</html>

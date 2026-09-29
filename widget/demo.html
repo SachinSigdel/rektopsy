@@ -26,11 +26,19 @@
 
   <h2>Pinned to one transaction</h2>
   <p>A site can pass the signature it's already showing; the autopsy runs on load.</p>
-  <rektopsy-autopsy id="pinned"
+  <rektopsy-autopsy id="pinned" report="http://localhost:3000"
     signature="2KhUjNQsVikHC6JnpigNW4fhspGJYPM7SsgutEXjR6mj8ufLgSdVwA9KZEeMjCdhxGcMMMJG91rUyYM9h32c94zX">
   </rektopsy-autopsy>
 
+  <h2>Attached from code</h2>
+  <p>Rektopsy.attach({ sig, theme: "dark", target: "#help" })</p>
+  <div id="help"></div>
+
   <script>
+    addEventListener("DOMContentLoaded", () => Rektopsy.attach({
+      sig: "36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg",
+      theme: "dark", target: "#help", report: "http://localhost:3000",
+    }));
     document.addEventListener("rektopsy:result", (e) => console.log("[rektopsy] result", e.detail.category));
     document.addEventListener("rektopsy:error", (e) => console.log("[rektopsy] error", e.detail.message));
   </script>

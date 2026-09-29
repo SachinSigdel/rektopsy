@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rektopsy — autopsy report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+body { margin: 0; font-family: "IBM Plex Sans", system-ui, sans-serif; background: #0B0C0E; }
+a { color: #E8703A; } a:hover { color: #F28B59; }
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 1180px; box-sizing: border-box; background: #0B0C0E; color: #EDEAE3; display: flex; flex-direction: column">
+
+<div style="height: 72px; box-sizing: border-box; padding: 0 48px; border-bottom: 1px solid #262A2F; display: flex; align-items: center; justify-content: space-between">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #EDEAE3">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8703A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2 5 4-12 2 7h6"></path></svg>
+<span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 23px">Rektopsy</span>
+</a>
+<div style="display: flex; align-items: center; gap: 12px">
+<button type="button" style="height: 44px; padding: 0 18px; background: transparent; color: #9A968C; border: 1px solid #262A2F; border-radius: 10px; font-family: inherit; font-size: 14px; cursor: pointer">Share report</button>
+<button type="button" style="height: 44px; padding: 0 20px; background: #1B1E22; color: #EDEAE3; border: 1px solid #262A2F; border-radius: 10px; font-family: inherit; font-size: 14px; cursor: pointer">New autopsy</button>
+</div>
+</div>
+
+<div style="box-sizing: border-box; padding: 28px 48px 0; display: flex; align-items: center; gap: 16px">
+<span style="display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; background: #2A1410; border: 1px solid #5A2A1C; border-radius: 8px; font-size: 13px; color: #F0906B">
+<span style="width: 6px; height: 6px; border-radius: 50%; background: #E8703A"></span>Failed
+</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9A968C">4Nd7xKq2mVJhtL9ePzRc8vWaY3uBnG6sTfH1jXoD5CrM</span>
+<span style="font-size: 13px; color: #6F6C65">slot 298,441,027 &middot; 6 min ago</span>
+</div>
+
+<div style="flex-grow: 1; box-sizing: border-box; padding: 24px 48px 40px; display: flex; gap: 24px">
+
+<div style="width: 752px; display: flex; flex-direction: column; gap: 20px">
+
+<div style="background: #141619; border: 1px solid #262A2F; border-radius: 18px; padding: 32px; display: flex; flex-direction: column; gap: 18px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #9A968C">Cause of death</span>
+<h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 40px; line-height: 1.14">The price moved further than you allowed.</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.65; color: #C9C5BB">You set slippage to <span style="font-family: 'IBM Plex Mono', monospace; color: #EDEAE3">0.5%</span>. Between signing and execution the SOL/USDC pool moved <span style="font-family: 'IBM Plex Mono', monospace; color: #EDEAE3">1.24%</span>, so the swap would have returned fewer tokens than your minimum. The program refused the trade and returned everything to your wallet.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<span style="height: 28px; padding: 0 11px; display: inline-flex; align-items: center; background: #1B1E22; border-radius: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A968C">SlippageToleranceExceeded</span>
+<span style="height: 28px; padding: 0 11px; display: inline-flex; align-items: center; background: #1B1E22; border-radius: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A968C">custom error 0x1771</span>
+<span style="height: 28px; padding: 0 11px; display: inline-flex; align-items: center; background: #1B1E22; border-radius: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9A968C">instruction 3</span>
+</div>
+</div>
+
+<div style="background: #10181A; border: 1px solid #234641; border-radius: 18px; padding: 28px 32px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 10px">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4FB3A0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #7FC9BA">The fix</span>
+</div>
+<p style="margin: 0; font-size: 16px; line-height: 1.65; color: #D6DEDB">Raise slippage to <span style="font-family: 'IBM Plex Mono', monospace; color: #EDEAE3">2%</span> and send again. This pool has moved more than 1% in 14 of the last 20 minutes, so 0.5% will keep failing while volatility stays where it is.</p>
+<div style="display: flex; align-items: center; gap: 12px">
+<button type="button" style="height: 48px; padding: 0 22px; background: #4FB3A0; color: #062421; border: none; border-radius: 11px; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer">Retry with 2% slippage</button>
+<span style="font-size: 13px; color: #7E948F">Estimated cost 0.00021 SOL</span>
+</div>
+</div>
+
+<div style="background: #141619; border: 1px solid #262A2F; border-radius: 18px; padding: 28px 32px; display: flex; flex-direction: column; gap: 18px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #9A968C">Where it went wrong</span>
+
+<div style="display: flex; gap: 16px">
+<div style="width: 26px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 3px">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4FB3A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+<div style="width: 1px; flex-grow: 1; background: #262A2F"></div>
+</div>
+<div style="flex-grow: 1; padding-bottom: 18px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px">Compute budget set</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6F6C65">ComputeBudget111111111111111111111111111111</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 16px">
+<div style="width: 26px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 3px">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4FB3A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+<div style="width: 1px; flex-grow: 1; background: #262A2F"></div>
+</div>
+<div style="flex-grow: 1; padding-bottom: 18px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px">Token account created</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6F6C65">AssociatedTokenAccount &middot; 0.00204 SOL rent</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 16px">
+<div style="width: 26px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 3px">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4FB3A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+<div style="width: 1px; flex-grow: 1; background: #262A2F"></div>
+</div>
+<div style="flex-grow: 1; padding-bottom: 18px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px">Route quoted</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6F6C65">1.0 SOL &rarr; 214.88 USDC expected</span>
+</div>
+</div>
+
+<div style="display: flex; gap: 16px">
+<div style="width: 26px; display: flex; justify-content: center; padding-top: 3px">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8703A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+</div>
+<div style="flex-grow: 1; background: #1B1216; border: 1px solid #4A241C; border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; color: #F0906B">Swap reverted &mdash; instruction 3</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.6; color: #A98A80">minimum_out 213.80 &middot; actual_out 212.22 &middot; shortfall 1.58 USDC</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 20px">
+
+<div style="background: #141619; border: 1px solid #262A2F; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #9A968C">Vitals</span>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px"><span style="color: #9A968C">Fee paid</span><span style="font-family: 'IBM Plex Mono', monospace">0.00019 SOL</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px"><span style="color: #9A968C">Compute used</span><span style="font-family: 'IBM Plex Mono', monospace">104,882 / 200,000</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px"><span style="color: #9A968C">Programs touched</span><span style="font-family: 'IBM Plex Mono', monospace">4</span></div>
+<div style="display: flex; align-items: center; justify-content: space-between; font-size: 14px"><span style="color: #9A968C">Value lost</span><span style="font-family: 'IBM Plex Mono', monospace; color: #F0906B">fee only</span></div>
+<div style="height: 1px; background: #262A2F"></div>
+<p style="margin: 0; font-size: 13px; line-height: 1.55; color: #9A968C">Your funds never left the wallet. A reverted swap costs the network fee and nothing else.</p>
+</div>
+
+<div style="flex-grow: 1; background: #141619; border: 1px solid #262A2F; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #9A968C">Raw program log</span>
+<button type="button" aria-label="Copy raw log" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #262A2F; border-radius: 8px; cursor: pointer">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A968C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+</button>
+</div>
+<div style="flex-grow: 1; background: #0B0C0E; border: 1px solid #1F2329; border-radius: 12px; padding: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; line-height: 1.85; color: #7E7B73; overflow: hidden">
+<div>invoke [1] JUP6Lk...4dN</div>
+<div>log: Instruction: Route</div>
+<div>invoke [2] whirLbM...ZDc</div>
+<div>log: Instruction: Swap</div>
+<div style="color: #E8703A">log: AnchorError 6001</div>
+<div style="color: #E8703A">SlippageToleranceExceeded</div>
+<div>failed: custom error 0x1771</div>
+<div>consumed 104882 of 200000 CU</div>
+</div>
+<p style="margin: 0; font-size: 12px; line-height: 1.55; color: #6F6C65">Every line in the verdict above traces back to a line here.</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

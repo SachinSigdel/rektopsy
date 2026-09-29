@@ -76,13 +76,20 @@ later only to test a proposed fix in a sandbox.
   400 bad signature, 502 RPC failure, `GET /health`. CORS defaults to `*` (the
   widget runs on other sites); narrow with `REKTOPSY_CORS_ORIGINS`.
 - `tests/`: offline API tests (fixtures stand in for RPC, LLM off).
-- `web/`: Next.js 16 + Tailwind 4 UI (one page: `app/page.tsx`, client logic in
-  `app/autopsy.tsx`). Calls `NEXT_PUBLIC_API_URL` (default localhost:8000).
-  Evidence quotes log lines from the API's `log_lines` field. Next 16 ships its
+- `web/`: Next.js 16 + Tailwind 4 UI following `designs/` (Main, Report, Widget
+  HTML mockups; IBM Plex Sans/Mono + Instrument Serif). `/` = landing + form
+  (`app/signature-form.tsx`), `/report?sig=` = report (`app/report/report.tsx`).
+  Calls `NEXT_PUBLIC_API_URL` (default localhost:8000). The report uses the
+  API's `tx` block (steps, vitals, full logs; built in `pipeline.tx_summary`)
+  and highlights cited log lines. Landing stats are real eval numbers in
+  `web/lib/eval-stats.ts` (update by hand if the eval changes).
+  User decisions (2026-09-29): "Connect wallet" and "Retry with X" stay as
+  disabled "Soon" visuals (read-only rule); Pricing link kept, points to a "Free" note. Next 16 ships its
   own docs in `web/node_modules/next/dist/docs/`; read them before changing APIs.
 - `widget/rektopsy-widget.js`: dependency-free `<rektopsy-autopsy>` custom
   element (shadow DOM; `signature` attr runs at once, else shows an input; `api`
-  attr defaults to the script's origin). The API serves it at `GET /widget.js`
+  attr defaults to the script's origin; `report` attr adds a "Full autopsy" link;
+  also `Rektopsy.attach({sig, theme, target})`). The API serves it at `GET /widget.js`
   (cached 5 min: bust with `?v=` when testing). API data goes in as text only,
   never innerHTML: it runs on other people's sites. `widget/demo.html` embeds it.
 
