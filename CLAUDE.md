@@ -9,6 +9,23 @@ deterministically from the logs/meta, and return:
 3. Whether their funds are safe
 4. Evidence: every claim traced to a log line or meta field
 
+## Where we left off (2026-09-29)
+Step 3 code is done and committed; the no-LLM eval scores 25/25 causes, 0
+hallucinated numbers (inflated: labels came from the same logs the pipeline
+reads). Next session:
+1. Check `.env` has `GROQ_API_KEY` (user is creating a free key at
+   console.groq.com and pasting it into `.env` themselves; never ask them to
+   paste it in chat). If missing, remind them how.
+2. Run `PYTHONPATH=. uv run python eval/run.py --baseline`. Look at any
+   `rejected` retries and template fallbacks; tune `SYSTEM_PROMPT` if the LLM
+   keeps tripping the number guard.
+3. Hand-score fix usefulness 0-2 for both arms into `eval/fix_scores.json`
+   (`{"pipeline": {"case01": 2, ...}, "baseline": {...}}`). Rubric: 2 = right
+   action with the right value, 1 = right direction, no value, 0 = wrong or none.
+4. Show the user the eval table, then start step 4 (FastAPI).
+Nothing is pushed to GitHub; `gh` isn't installed.
+The user is a Solana beginner: explain in plain words and back claims with evidence.
+
 ## Core rule (never violate)
 The LLM NEVER invents a number or fact. Python extracts everything; the LLM only
 turns the facts object into sentences. `verify.py` rejects any output containing
