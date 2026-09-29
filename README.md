@@ -105,7 +105,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/) (it installs Python 3.11 for
 you), and Node.js 20.9+ with [pnpm](https://pnpm.io) for the web UI.
 
 ```bash
-git clone <this repo> rektopsy && cd rektopsy
+git clone https://github.com/SachinSigdel/rektopsy.git && cd rektopsy
 uv sync
 cp .env.example .env
 ```
