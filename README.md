@@ -155,6 +155,8 @@ PYTHONPATH=. uv run python eval/run.py --no-llm      # eval, no key needed
 PYTHONPATH=. uv run python eval/run.py --baseline    # needs GROQ_API_KEY
 ```
 
+Each eval run overwrites `eval/results.json`; the committed copy holds the
+numbers in the table above (restore it with `git checkout eval/results.json`).
 Groq's free tier allows 8,000 tokens per minute for this model. If the baseline
 arm is skipped with a 429 error, wait a minute and run it again.
 
