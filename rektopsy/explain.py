@@ -29,6 +29,8 @@ Rules:
 - If a value is missing, leave it out. Never guess a cause the brief doesn't state.
 - If category is "unknown_custom", say the error could not be identified; don't speculate.
 - No jargon without a short explanation. No list numbering.
+- Never write the brief's field names (like would_receive_raw); say what they mean in words.
+  "raw" amounts are in the token's smallest unit; call them "raw units".
 Reply with a JSON object: {"cause": "...", "fix": "...", "funds": "..."}"""
 
 

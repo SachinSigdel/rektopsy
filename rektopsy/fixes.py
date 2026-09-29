@@ -8,9 +8,10 @@ fix (with values), funds status and evidence, each claim with its source.
 import re
 from decimal import ROUND_HALF_UP, Decimal
 
-from .decode import TOKEN, TOKEN_2022, jupiter_swap_args, program_name, resolve_error
+from .decode import TOKEN, TOKEN_2022, decode_instruction, jupiter_swap_args, program_name, resolve_error
 
 ATA_PROGRAM = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+METEORA_DAMM_V2 = "cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG"
 MAX_CU_LIMIT = 1_400_000
 CU_HEADROOM = Decimal("1.5")  # the tx stopped early, so real need is > consumed
 LAMPORTS_PER_SOL = 10**9
@@ -71,35 +72,84 @@ def _pct(part: int, whole: int) -> str:
     return _fmt(Decimal(part) * 100 / Decimal(whole))
 
 
+def _min_out_fix(actual: int, minimum: int, sources: list[str], sol: bool = False) -> dict:
+    gap = minimum - actual
+    return {
+        "action": "retry with a fresh quote, or lower the minimum you accept",
+        "values": {"would_receive_raw": actual, "your_minimum_raw": minimum, "shortfall_raw": gap,
+                   "shortfall_pct_of_minimum": _pct(gap, minimum),
+                   **({"would_receive_sol": _sol(actual), "your_minimum_sol": _sol(minimum),
+                       "shortfall_sol": _sol(gap)} if sol else {})},
+        "rule": "minimum must be at most what the trade would give",
+        "sources": sources,
+    }
+
+
+def _max_in_fix(maximum: int, needed: int, sources: list[str], sol: bool = False) -> dict:
+    gap = needed - maximum
+    return {
+        "action": "retry with a fresh quote, or raise the maximum you are willing to pay",
+        "values": {"your_maximum_raw": maximum, "needed_raw": needed, "over_by_raw": gap,
+                   "over_by_pct_of_maximum": _pct(gap, maximum),
+                   **({"your_maximum_sol": _sol(maximum), "needed_sol": _sol(needed),
+                       "over_by_sol": _sol(gap)} if sol else {})},
+        "rule": "maximum must be at least what the trade needs",
+        "sources": sources,
+    }
+
+
+def _ray_log_fix(facts: dict) -> dict | None:
+    """Raydium AMM v4 logs the would-be result before its slippage check (parse.RAY_LOG_FIELDS)."""
+    ray = {n["key"][len("ray_log."):]: n for n in facts["log_numbers"] if (n["key"] or "").startswith("ray_log.")}
+    if "out_amount" in ray:
+        actual, minimum = int(ray["out_amount"]["value"]), int(ray["minimum_out"]["value"])
+        if actual < minimum:
+            return _min_out_fix(actual, minimum, [ray["out_amount"]["source"] + " (ray_log)"])
+    if "deduct_in" in ray:
+        maximum, needed = int(ray["max_in"]["value"]), int(ray["deduct_in"]["value"])
+        if needed > maximum:
+            return _max_in_fix(maximum, needed, [ray["deduct_in"]["source"] + " (ray_log)"])
+    return None
+
+
+def _meteora_damm_v2_fix(facts: dict, tx: dict) -> dict | None:
+    """DAMM v2 doesn't log what the swap needed, so show the user's limits but no new value."""
+    idx = (facts.get("failure") or {}).get("top_level_instruction_index")
+    instructions = tx["transaction"]["message"]["instructions"]
+    if idx is None or idx >= len(instructions) or instructions[idx].get("programId") != METEORA_DAMM_V2:
+        return None
+    decoded = decode_instruction(instructions[idx])
+    args = (decoded or {}).get("args") or {}
+    params = args.get("_params") or args.get("params") or {}
+    if decoded and decoded["instruction"] == "swap2" and "amount_0" in params:
+        if params.get("swap_mode") == 2:  # ExactOut: amount_0 = amount_out, amount_1 = maximum_amount_in
+            values = {"exact_amount_out_raw": params["amount_0"], "your_maximum_in_raw": params["amount_1"]}
+        else:  # ExactIn / PartialFill: amount_0 = amount_in, amount_1 = minimum_amount_out
+            values = {"amount_in_raw": params["amount_0"], "your_minimum_out_raw": params["amount_1"]}
+    elif decoded and decoded["instruction"] == "swap" and "amount_in" in params:
+        values = {"amount_in_raw": params["amount_in"], "your_minimum_out_raw": params["minimum_amount_out"]}
+    else:
+        return None
+    return {"action": "get a fresh quote and retry; if it keeps failing, raise your slippage setting",
+            "values": values,
+            "rule": "your limits are from the swap instruction; the pool doesn't log what the swap needed, "
+                    "so no new value is computed",
+            "sources": [f"transaction.message.instructions[{idx}].data (Meteora DAMM v2 IDL)"]}
+
+
 def _slippage_fix(facts: dict, err: dict, tx: dict) -> dict:
     name = err.get("name")
     lr = _left_right(facts)
     if lr and name in MIN_OUT_ERRORS:
         left, right = lr
-        actual, minimum = int(left["value"]), int(right["value"])
-        gap = minimum - actual
-        return {
-            "action": "retry with a fresh quote, or lower the minimum you accept",
-            "values": {"would_receive_raw": actual, "your_minimum_raw": minimum, "shortfall_raw": gap,
-                       "shortfall_pct_of_minimum": _pct(gap, minimum),
-                       **({"would_receive_sol": _sol(actual), "your_minimum_sol": _sol(minimum),
-                           "shortfall_sol": _sol(gap)} if "Sol" in name else {})},
-            "rule": "minimum must be at most what the trade would give",
-            "sources": [left["source"], right["source"]],
-        }
+        return _min_out_fix(int(left["value"]), int(right["value"]), [left["source"], right["source"]],
+                            sol="Sol" in name)
     if lr and name in MAX_IN_ERRORS:
         left, right = lr
-        maximum, needed = int(left["value"]), int(right["value"])
-        gap = needed - maximum
-        return {
-            "action": "retry with a fresh quote, or raise the maximum you are willing to pay",
-            "values": {"your_maximum_raw": maximum, "needed_raw": needed, "over_by_raw": gap,
-                       "over_by_pct_of_maximum": _pct(gap, maximum),
-                       **({"your_maximum_sol": _sol(maximum), "needed_sol": _sol(needed),
-                           "over_by_sol": _sol(gap)} if "Sol" in name else {})},
-            "rule": "maximum must be at least what the trade needs",
-            "sources": [left["source"], right["source"]],
-        }
+        return _max_in_fix(int(left["value"]), int(right["value"]), [left["source"], right["source"]],
+                           sol="Sol" in name)
+    if fix := _ray_log_fix(facts) or _meteora_damm_v2_fix(facts, tx):
+        return fix
     for i, ix in enumerate(tx["transaction"]["message"]["instructions"]):
         args = jupiter_swap_args(ix)
         if not args:
@@ -231,7 +281,7 @@ def diagnose(facts: dict, tx: dict | None, use_network: bool = True) -> dict:
     fee = facts["fee"]
     if category == "succeeded":
         brief |= {"cause": {"summary": "the transaction succeeded; nothing failed", "source": "meta.err is null"},
-                  "fix": None,
+                  "fix": {"action": "no changes needed; it worked", "values": {}, "rule": "", "sources": []},
                   "funds": {"safe": True, "fee_lamports": fee["lamports"], "fee_sol": fee["sol"],
                             "summary": "it ran as intended"}}
         return brief

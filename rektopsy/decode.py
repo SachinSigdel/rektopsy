@@ -20,7 +20,7 @@ from pathlib import Path
 import httpx
 
 from .fetch import rpc_url
-from .parse import B58_ALPHABET, b58decode
+from .parse import B58_ALPHABET, RAYDIUM_AMM_V4, b58decode
 
 IDL_CACHE = Path(__file__).resolve().parent.parent / ".cache" / "idl"
 
@@ -28,7 +28,6 @@ SYSTEM = "11111111111111111111111111111111"
 TOKEN = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 TOKEN_2022 = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 JUPITER = "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
-RAYDIUM_AMM_V4 = "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
 
 PROGRAM_NAMES = {
     SYSTEM: "System Program",

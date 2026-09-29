@@ -5,10 +5,20 @@ field path, so each later claim can be traced back to the chain.
 Nothing here interprets or guesses: error *names* are resolved in decode.py.
 """
 
+import base64
+import binascii
 import re
+import struct
 from decimal import Decimal
 
 COMPUTE_BUDGET_PROGRAM = "ComputeBudget111111111111111111111111111111"
+RAYDIUM_AMM_V4 = "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8"
+# Raydium AMM v4 `ray_log:` lines are base64(bincode(struct)), logged before the
+# slippage check. Layout from raydium-amm program/src/log.rs: u8 log_type, 7 x u64.
+RAY_LOG_FIELDS = {
+    3: ("amount_in", "minimum_out", "direction", "user_source", "pool_coin", "pool_pc", "out_amount"),  # SwapBaseIn
+    4: ("max_in", "amount_out", "direction", "user_source", "pool_coin", "pool_pc", "deduct_in"),  # SwapBaseOut
+}
 
 INVOKE_RE = re.compile(r"^Program (\w+) invoke \[(\d+)\]$")
 SUCCESS_RE = re.compile(r"^Program (\w+) success$")
@@ -61,6 +71,19 @@ def parse_compute_budget(tx: dict) -> dict:
         elif tag == 3 and len(body) >= 8:
             out["unit_price_micro_lamports"] = {"value": int.from_bytes(body[:8], "little"), "source": src}
     return out
+
+
+def _ray_log_numbers(b64: str, program: str, source: str) -> list[dict]:
+    """Decode a Raydium AMM v4 swap log into keyed numbers ("ray_log.<field>")."""
+    try:
+        raw = base64.b64decode(b64, validate=True)
+    except binascii.Error:
+        return []
+    if len(raw) != 57 or raw[0] not in RAY_LOG_FIELDS:
+        return []
+    values = struct.unpack("<7Q", raw[1:])
+    return [{"key": f"ray_log.{name}", "value": str(v), "program": program, "source": source}
+            for name, v in zip(RAY_LOG_FIELDS[raw[0]], values)]
 
 
 def parse_logs(logs: list[str], instructions: list[dict]) -> dict:
@@ -117,6 +140,10 @@ def parse_logs(logs: list[str], instructions: list[dict]) -> dict:
             continue
         if m := LOG_RE.match(line):
             text = m.group(1)
+            program = stack[-1][0] if stack else None
+            if text.startswith("ray_log: ") and program == RAYDIUM_AMM_V4:
+                numbers.extend(_ray_log_numbers(text[len("ray_log: "):], program, f"logs[{i}]"))
+                continue
             if am := ANCHOR_ERR_RE.search(text):
                 anchor_errors.append({
                     "program": stack[-1][0] if stack else None,

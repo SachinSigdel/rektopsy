@@ -4,10 +4,10 @@
       "cases": 25,
       "correct_cause_pct": 100.0,
       "hallucinated_numbers": 0,
-      "fix_usefulness_avg": 1.88,
+      "fix_usefulness_avg": 1.96,
       "fix_usefulness_scored": 25,
-      "median_latency_ms": 2885,
-      "median_tokens": 763
+      "median_latency_ms": 2936,
+      "median_tokens": 807
     },
     "baseline": {
       "cases": 25,
@@ -28,11 +28,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 871,
-      "tokens": 784,
-      "cause": "The transaction failed because the slippage tolerance was exceeded in the Jupiter Aggregator v6 program.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value of 100 bps (1%).",
-      "funds": "Your money is safe; only the network fee of 19000 lamports was charged."
+      "latency_ms": 729,
+      "tokens": 827,
+      "cause": "The transaction failed because the price moved beyond the allowed slippage tolerance in the Jupiter Aggregator v6 program.",
+      "fix": "Get a fresh quote and retry; if it keeps failing, raise the slippage to the suggested value of 100 bps (1%).",
+      "funds": "Your funds are safe; only the network fee of 19000 raw units was charged."
     },
     {
       "id": "case02",
@@ -42,11 +42,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 695,
-      "tokens": 778,
-      "cause": "The transaction failed because the slippage tolerance was exceeded in the Jupiter Aggregator v6 program.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise slippage to the suggested value of 300 bps (3%).",
-      "funds": "Your funds are safe; only the network fee of 0.000455 SOL was charged."
+      "latency_ms": 751,
+      "tokens": 769,
+      "cause": "The transaction failed because the price moved more than the allowed slippage; Jupiter Aggregator v6 stopped it.",
+      "fix": "Get a fresh quote and try again; if it still fails, increase slippage to the suggested 300 bps (3%).",
+      "funds": "Your money is safe; only the network fee of 455000 raw units (0.000455 SOL) was charged."
     },
     {
       "id": "case03",
@@ -56,11 +56,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 822,
-      "tokens": 704,
-      "cause": "The transaction failed because the price moved beyond the slippage tolerance set for the Meteora DAMM v2 program.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise your slippage setting.",
-      "funds": "Your funds are safe; only the network fee of 5000 lamports (0.000005 SOL) was charged."
+      "latency_ms": 892,
+      "tokens": 807,
+      "cause": "The transaction failed because the price moved beyond the slippage tolerance you set while using the Meteora DAMM v2 program.",
+      "fix": "Get a fresh quote and retry; if it keeps failing, raise your slippage setting. The quote expects an exact output of 9143729393 raw units and you allowed a maximum input of 6872238 raw units.",
+      "funds": "Your funds are safe; only the network fee of 5000 lamports was charged."
     },
     {
       "id": "case04",
@@ -70,10 +70,10 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 3655,
-      "tokens": 783,
-      "cause": "The transaction failed because pump.fun required more SOL than your maximum limit (TooMuchSolRequired).",
-      "fix": "Retry with a fresh quote or increase your maximum payment to at least 85055426047 lamports (85.055426047 SOL).",
+      "latency_ms": 829,
+      "tokens": 900,
+      "cause": "The transaction failed because the pump.fun program required more SOL than your maximum limit, causing a slippage error.",
+      "fix": "Retry with a fresh quote or increase your maximum payment to at least 85055426047 raw units (85.055426047 SOL) instead of the current 4000000000 raw units (4 SOL).",
       "funds": "Your funds are safe; only the network fee of 10000 lamports (0.00001 SOL) was charged."
     },
     {
@@ -84,11 +84,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 879,
-      "tokens": 798,
-      "cause": "The transaction failed because the pump.fun program received less SOL than the minimum you set (TooLittleSolReceived).",
-      "fix": "Retry with a fresh quote or lower the minimum you accept; you would have received 14607347 lamports (0.014607347 SOL) but your minimum was 16598364 lamports (0.016598364 SOL).",
-      "funds": "Your funds are safe; only the network fee of 9000 lamports (0.000009 SOL) was charged."
+      "latency_ms": 828,
+      "tokens": 804,
+      "cause": "The pump.fun program tried to sell tokens but received only 14607347 raw SOL units, which is less than the minimum you set of 16598364 raw units, so the transaction was rejected due to slippage.",
+      "fix": "Retry with a fresh quote or lower the minimum you accept, adjusting the minimum below the amount you will actually receive.",
+      "funds": "Your money is safe; only the network fee of 9000 lamports (0.000009 SOL) was charged."
     },
     {
       "id": "case06",
@@ -98,10 +98,10 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 831,
-      "tokens": 702,
+      "latency_ms": 885,
+      "tokens": 809,
       "cause": "The transaction failed because the Raydium AMM v4 program exceeded the desired slippage limit.",
-      "fix": "Get a fresh quote and retry; if it keeps failing, raise your slippage setting.",
+      "fix": "Retry with a fresh quote or lower the minimum you accept; your minimum was 5915877453 raw units and the shortfall was 1993643 raw units (0.03%).",
       "funds": "Your money is safe; only the network fee of 71794 lamports was charged."
     },
     {
@@ -112,11 +112,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 836,
-      "tokens": 777,
-      "cause": "The PumpSwap AMM transaction failed because the slippage would have resulted in buying fewer tokens than your minimum amount (min_base_amount_out).",
-      "fix": "Retry with a fresh quote, or lower the minimum you accept. Your quote would have received 914404558890, but your minimum was 992769252057, a shortfall of 78364693167 (7.89%).",
-      "funds": "Your money is safe; only the network fee of 510000 lamports (0.00051 SOL) was charged."
+      "latency_ms": 986,
+      "tokens": 866,
+      "cause": "The PumpSwap AMM program failed because the slippage would have resulted in buying fewer tokens than your minimum base amount out.",
+      "fix": "Retry with a fresh quote, or lower the minimum you accept. The quote showed you would receive 914404558890 raw units, but your minimum was 992769252057 raw units, a shortfall of 78364693167 raw units (7.89%).",
+      "funds": "Your funds are safe; only the network fee of 510000 lamports (0.00051 SOL) was charged."
     },
     {
       "id": "case08",
@@ -126,10 +126,10 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 874,
-      "tokens": 813,
-      "cause": "The transaction ran out of compute units while being processed by Jupiter Aggregator v6 (calling program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi).",
-      "fix": "Raise the compute unit limit to 198000 (SetComputeUnitLimit) and resend the transaction.",
+      "latency_ms": 957,
+      "tokens": 896,
+      "cause": "The transaction ran out of compute units while being processed by the Jupiter Aggregator v6 (calling program BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi).",
+      "fix": "Raise the compute unit limit to 198000 (from the current 132439) and resend the transaction, using a unit price of 20000 micro\u2011lamports which results in a new max priority fee of 3960 lamports (0.00000396 SOL).",
       "funds": "Your funds are safe; only the network fee of 7649 lamports (0.000007649 SOL) was charged."
     },
     {
@@ -140,10 +140,10 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 1020,
-      "tokens": 880,
-      "cause": "The transaction ran out of compute units while executing program HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq, called by Jupiter Aggregator v6.",
-      "fix": "Raise the compute unit limit to 198000 (SetComputeUnitLimit) and resend, which also sets the max priority fee to 3960 lamports (0.00000396 SOL).",
+      "latency_ms": 1010,
+      "tokens": 898,
+      "cause": "The transaction ran out of compute units while Jupiter Aggregator v6 was calling program HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq.",
+      "fix": "Raise the compute unit limit to 198000 and resend the transaction; this also sets a new max priority fee of 3960 lamports (0.00000396 SOL).",
       "funds": "Your funds are safe; only the network fee of 7647 lamports (0.000007647 SOL) was charged."
     },
     {
@@ -154,11 +154,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 774,
-      "tokens": 690,
+      "latency_ms": 898,
+      "tokens": 744,
       "cause": "The transaction ran out of compute units while calling the pump.fun program.",
       "fix": "Raise the compute unit limit to 152000 and resend the transaction.",
-      "funds": "Your money is safe; only the 5000 lamport network fee was charged."
+      "funds": "Your money is safe; only the network fee of 5000 lamports (0.000005 SOL) was charged."
     },
     {
       "id": "case11",
@@ -168,11 +168,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 801,
-      "tokens": 763,
-      "cause": "The System Program tried to transfer but only had 914528 lamports, which is less than the required 987653 lamports.",
-      "fix": "Add SOL to the wallet and resend, covering the shortfall of 73125 lamports (0.000073125 SOL).",
-      "funds": "Your funds are safe; only the network fee of 105000 lamports (0.000105 SOL) was charged."
+      "latency_ms": 703,
+      "tokens": 808,
+      "cause": "The System Program tried to transfer but only had 914528 lamports, while 987653 lamports were required, so the transaction failed due to insufficient funds.",
+      "fix": "Add at least 73125 lamports (0.000073125 SOL) to the wallet and resend the transaction.",
+      "funds": "Your money is safe; only the network fee of 105000 lamports (0.000105 SOL) was charged."
     },
     {
       "id": "case12",
@@ -182,11 +182,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 833,
-      "tokens": 786,
-      "cause": "The System Program tried to transfer but only had 7361293 lamports, which is 2638707 lamports short of the required 10000000 lamports.",
-      "fix": "Add SOL to the wallet (at least 2638707 lamports, i.e., 0.002638707 SOL) and resend the transaction.",
-      "funds": "Your money is safe; only the network fee of 1004999 lamports (0.001004999 SOL) was charged."
+      "latency_ms": 7036,
+      "tokens": 816,
+      "cause": "The System Program tried to transfer but only had 7361293 lamports, which is less than the required 10000000 lamports.",
+      "fix": "Add SOL to the wallet and resend, providing at least the missing 2638707 lamports (0.002638707 SOL).",
+      "funds": "Your funds are safe; only the network fee of 1004999 lamports (0.001004999 SOL) was charged."
     },
     {
       "id": "case13",
@@ -196,11 +196,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 2995,
-      "tokens": 834,
-      "cause": "The transaction failed because the SPL Token program (called by PumpSwap AMM) reported insufficient funds for the transfer.",
-      "fix": "Top up the account or lower the transfer amount; you need 2614567182097 raw units (2614567.182097) but only have 1891633832874 raw units (1891633.832874), short by 722933349223 raw units (722933.349223).",
-      "funds": "Your funds are safe; only the network fee of 10050 lamports (0.00001005 SOL) was charged."
+      "latency_ms": 7104,
+      "tokens": 812,
+      "cause": "The PumpSwap AMM tried to move SPL Token tokens but the account didn\u2019t have enough of that token, causing an InsufficientFunds error from the SPL Token program.",
+      "fix": "Lower the transfer amount or add more of the token so the account meets the required amount of 2614567182097 raw units.",
+      "funds": "Your money is safe; only the network fee of 10050 lamports (0.00001005 SOL) was charged."
     },
     {
       "id": "case14",
@@ -210,11 +210,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 7319,
-      "tokens": 867,
-      "cause": "The transaction failed because the SPL Token-2022 program (called by Meteora Dynamic Bonding Curve) did not have enough tokens to cover the transfer, resulting in an InsufficientFunds error.",
-      "fix": "Top up the account or lower the transfer amount; the needed amount was 220288277176 raw units (220288.277176), but the account only had 1892113 raw units (1.892113), short by 220286385063 raw units (220286.385063).",
-      "funds": "Your funds are safe; only the network fee of 13111 lamports (0.000013111 SOL) was charged."
+      "latency_ms": 3063,
+      "tokens": 892,
+      "cause": "The transaction failed because the SPL Token-2022 program (called by Meteora Dynamic Bonding Curve) did not have enough tokens to cover the transfer.",
+      "fix": "Top up the account or lower the transfer amount; you need 220288277176 raw units but only have 1892113 raw units, leaving a shortfall of 220286385063 raw units.",
+      "funds": "Your funds are safe; only the network fee of 0.000013111 SOL was charged."
     },
     {
       "id": "case15",
@@ -224,11 +224,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 7084,
-      "tokens": 742,
+      "latency_ms": 7069,
+      "tokens": 768,
       "cause": "The SPL Token program reported insufficient funds for the transfer.",
-      "fix": "Lower the transfer amount or top up the account; you need at least 359806 units (0.359806) of the token.",
-      "funds": "Your money is safe; only the network fee of 11708 lamports (0.000011708 SOL) was charged."
+      "fix": "Lower the transfer amount or add more tokens; the account needs at least 359806 raw units of the token.",
+      "funds": "Your money is safe; only the network fee of 11708 lamports was charged."
     },
     {
       "id": "case16",
@@ -238,11 +238,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 7124,
-      "tokens": 714,
+      "latency_ms": 7107,
+      "tokens": 762,
       "cause": "The pump.fun program expected the associated_user account to already be initialized, but it was not found.",
-      "fix": "Create the associated_user token account (or ensure you are using the correct wallet) before retrying.",
-      "funds": "Your money is safe; only the network fee of 0.0000149 SOL was charged."
+      "fix": "Create the associated_user token account (or use the correct wallet that already has it) before trying again.",
+      "funds": "Your money is safe; only the network fee of 14900 lamports was charged."
     },
     {
       "id": "case17",
@@ -252,11 +252,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 2970,
-      "tokens": 709,
-      "cause": "The pump.fun program expected the associated_user account to already exist, but it was not initialized.",
-      "fix": "Create the associated_user token account (or ensure you are using the correct wallet that holds the token).",
-      "funds": "Your money is safe; only the network fee of 0.000013 SOL was charged."
+      "latency_ms": 7023,
+      "tokens": 758,
+      "cause": "The pump.fun program expected the associated_user token account to already exist, but it was not initialized.",
+      "fix": "Create the associated_user token account for the wallet before trying again.",
+      "funds": "Your funds are safe; only the network fee of 13000 lamports (0.000013 SOL) was charged."
     },
     {
       "id": "case18",
@@ -266,11 +266,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 2904,
-      "tokens": 735,
+      "latency_ms": 2969,
+      "tokens": 736,
       "cause": "The Raydium CLMM program expected the token account recipient_token_account_1 to already exist, but it was not initialized.",
-      "fix": "Create the token account named recipient_token_account_1 (or use the correct wallet that holds the token).",
-      "funds": "Your funds are safe; only the network fee of 205000 lamports was charged."
+      "fix": "Create the missing token account (recipient_token_account_1) before retrying the transaction.",
+      "funds": "Your money is safe; only the network fee of 205000 raw units (0.000205 SOL) was charged."
     },
     {
       "id": "case19",
@@ -280,11 +280,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 3037,
-      "tokens": 742,
-      "cause": "The error could not be identified; the program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc returned custom code 1004.",
-      "fix": "Ask the app or program's support about the error code 1004 for program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc.",
-      "funds": "Your money is safe; only the network fee of 6129 lamports (0.000006129 SOL) was charged."
+      "latency_ms": 3012,
+      "tokens": 814,
+      "cause": "The transaction failed with an unknown custom error code 1004 from program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc, so the specific problem could not be identified.",
+      "fix": "Ask the app or program's support about error code 1004 from program SiVKATvf95TNna4ZbqPBNonsuyJLmawEPP7TRRwdZCc.",
+      "funds": "Your money is safe; only the network fee of 6129 raw units (0.000006129 SOL) was charged."
     },
     {
       "id": "case20",
@@ -294,11 +294,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 7412,
-      "tokens": 935,
-      "cause": "The transaction failed with an unknown custom error code 43008 from program CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y; the error could not be identified.",
+      "latency_ms": 7251,
+      "tokens": 826,
+      "cause": "The error could not be identified; the failing program is CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y.",
       "fix": "Ask the app or program's support about the error code 43008 for program CApP1caNy2LgFLV4WZtSf3WPaECpm6gN3zT9kCmXN29y.",
-      "funds": "Your funds are safe; you only paid a fee of 6463 lamports (0.000006463 SOL)."
+      "funds": "Your money is safe; only the network fee of 6463 raw units (0.000006463 SOL) was charged."
     },
     {
       "id": "case21",
@@ -308,11 +308,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 3003,
-      "tokens": 775,
-      "cause": "The error could not be identified; the program A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj returned an unknown custom error code 0.",
-      "fix": "Ask the app or program's support about the error code below; custom_code is 0 and program is A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj.",
-      "funds": "Your money is safe; only the network fee of 5950 lamports (0.00000595 SOL) was charged."
+      "latency_ms": 7529,
+      "tokens": 797,
+      "cause": "The error could not be identified; the program A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj returned an unknown custom code 0.",
+      "fix": "Ask the app or program's support about the error code 0 from program A2eEMe8iFdqUY7f1PKjiv2ruzmH5oijgg8cxXMZBxBBj.",
+      "funds": "Your money is safe; only the network fee of 5950 raw units (0.00000595 SOL) was charged."
     },
     {
       "id": "case22",
@@ -322,11 +322,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 2993,
-      "tokens": 593,
-      "cause": "The transaction never reached the chain, so it didn\u2019t execute at all.",
-      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL for the fee.",
-      "funds": "Your money is safe; no funds moved and no fee was charged."
+      "latency_ms": 2982,
+      "tokens": 635,
+      "cause": "The transaction never reached the blockchain, so nothing was processed.",
+      "fix": "Resend the transaction with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL to cover the fee.",
+      "funds": "Your funds are safe; no fee was charged and no money moved."
     },
     {
       "id": "case23",
@@ -336,11 +336,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 2885,
-      "tokens": 598,
-      "cause": "The transaction never reached the chain, so it didn\u2019t execute at all.",
-      "fix": "Resend it with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL for the fee.",
-      "funds": "Your money is safe; no funds moved and no fee was charged."
+      "latency_ms": 715,
+      "tokens": 639,
+      "cause": "The transaction never reached the blockchain, so nothing was processed.",
+      "fix": "Resend the transaction with a fresh blockhash (just retry in your wallet or app) and make sure the wallet has enough SOL to cover the fee.",
+      "funds": "Your funds are safe; no fee was charged and no money moved."
     },
     {
       "id": "case24",
@@ -350,11 +350,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 8638,
-      "tokens": 516,
+      "latency_ms": 6993,
+      "tokens": 599,
       "cause": "The transaction succeeded; nothing failed.",
-      "fix": "",
-      "funds": "Your money is safe and the fee was 10494 lamports (0.000010494 SOL)."
+      "fix": "No changes needed; it worked.",
+      "funds": "Your money is safe and the fee was 10494 raw units."
     },
     {
       "id": "case25",
@@ -364,11 +364,11 @@
       "hallucinated": [],
       "first_attempt_rejected": false,
       "mode": "llm",
-      "latency_ms": 661,
-      "tokens": 525,
+      "latency_ms": 2936,
+      "tokens": 579,
       "cause": "The transaction succeeded; nothing failed.",
-      "fix": "No changes needed.",
-      "funds": "Your money is safe and the fee was 24057 lamports (0.000024057 SOL)."
+      "fix": "No changes needed; it worked.",
+      "funds": "Your money is safe and the fee was 24057 raw units."
     }
   ],
   "baseline": [

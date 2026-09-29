@@ -10,9 +10,10 @@ deterministically from the logs/meta, and return:
 4. Evidence: every claim traced to a log line or meta field
 
 ## Where we left off (2026-09-29)
-Steps 3 and 4 are done (API in `rektopsy/api.py`, tests in `tests/`).
-Next: step 5, the Next.js UI. Known small gaps: fix text is blank for succeeded txs
-(case24); Meteora/Raydium slippage values aren't decoded (case03/06 fix has no value).
+Steps 3 and 4 are done (API in `rektopsy/api.py`, tests in `tests/`). Step 5
+(Next.js UI in `web/`) is in progress. Remaining eval gap: Meteora DAMM v2
+slippage (case03) shows the user's limits but no new value, since the pool
+doesn't log what the swap needed.
 The user is a Solana beginner: explain in plain words and back claims with evidence.
 
 ## Core rule (never violate)
@@ -84,6 +85,14 @@ later only to test a proposed fix in a sandbox.
 - Anchor `require_gte!(left, right)` logs `Left:`/`Right:` and fails when
   left < right. Min-out errors: left = got, right = minimum. Max-in errors:
   left = maximum, right = needed.
+- Raydium AMM v4 logs `ray_log: <base64>` before its slippage check: bincode
+  u8 type + 7 x u64 (raydium-amm `log.rs`). Type 3 SwapBaseIn has `out_amount` vs
+  `minimum_out`; type 4 SwapBaseOut has `deduct_in` vs `max_in`. Decoded in parse.py.
+- Meteora DAMM v2 `swap2(amount_0, amount_1, swap_mode)`: ExactIn/PartialFill
+  (0/1) = amount_in, minimum_out; ExactOut (2) = amount_out, maximum_in. It logs
+  no would-be amounts.
+- Groq free tier caps gpt-oss-120b at 8000 tokens/min; the baseline arm (~1900
+  tokens/case) can hit it right after a pipeline run. Wait a minute and rerun.
 - Real users rarely hit compute limits (wallets simulate first); the two
   compute bot cases are marked in `cases.json` notes.
 
@@ -119,9 +128,9 @@ Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
    |---|---|---|
    | correct cause | 100% | 88% |
    | untraceable numbers | 0 | 8 (1 invented, 7 LLM's own correct math/rounding) |
-   | fix usefulness (0-2) | 1.88 | 1.04 |
+   | fix usefulness (0-2) | 1.96 | 1.04 |
    | median latency | 2.9 s | 15.1 s |
-   | median tokens | 763 | 1890 |
+   | median tokens | 807 | 1890 |
    Caveat: cause labels came from the same logs the pipeline reads.
 4. ✅ FastAPI: `POST /autopsy { signature }`.
 5. Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
