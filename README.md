@@ -5,6 +5,14 @@ whether your funds are safe, with every claim traced back to the chain.**
 
 Built for the Colosseum Crypto World's Fair hackathon.
 
+**Try it live:** [rektopsy.vercel.app](https://rektopsy.vercel.app) ·
+[example report](https://rektopsy.vercel.app/report?sig=36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg) ·
+[API docs](https://rektopsy-api.onrender.com/docs) ·
+widget: `<script src="https://rektopsy-api.onrender.com/widget.js" defer></script>`
+
+The API runs on Render's free plan, so the first request after 15 idle minutes
+can take up to a minute while it wakes up.
+
 ## The problem
 
 When a Solana transaction fails, your wallet shows something like
