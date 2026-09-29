@@ -10,8 +10,8 @@ deterministically from the logs/meta, and return:
 4. Evidence: every claim traced to a log line or meta field
 
 ## Where we left off (2026-09-29)
-Step 3 is done: LLM + baseline eval run, fix scores in `eval/fix_scores.json`.
-Now on step 4 (FastAPI). Known small gaps: fix text is blank for succeeded txs
+Steps 3 and 4 are done (API in `rektopsy/api.py`, tests in `tests/`).
+Next: step 5, the Next.js UI. Known small gaps: fix text is blank for succeeded txs
 (case24); Meteora/Raydium slippage values aren't decoded (case03/06 fix has no value).
 The user is a Solana beginner: explain in plain words and back claims with evidence.
 
@@ -68,7 +68,11 @@ later only to test a proposed fix in a sandbox.
 - `rektopsy/__main__.py`: CLI.
 - `eval/`: `cases.json` + `fixtures/` (tx JSON, `idl/` snapshots) built by
   `build_cases.py`; `run.py` scores; `discover.py` finds candidates.
-- Planned: `api.py`, Next.js UI, widget.
+- `rektopsy/api.py`: FastAPI. `POST /autopsy {signature}` returns the CLI JSON;
+  400 bad signature, 502 RPC failure, `GET /health`. CORS defaults to `*` (the
+  widget runs on other sites); narrow with `REKTOPSY_CORS_ORIGINS`.
+- `tests/`: offline API tests (fixtures stand in for RPC, LLM off).
+- Planned: Next.js UI, widget.
 
 ## Solana gotchas learned
 - Most failed Jupiter txs are bots. `discover.is_bot_like`: same mint in and
@@ -90,6 +94,8 @@ uv run python -m rektopsy <signature> --no-llm   # template prose only
 uv run python -m rektopsy <signature> --facts    # raw extracted facts
 PYTHONPATH=. uv run python eval/run.py [--no-llm] [--baseline]
 PYTHONPATH=. uv run python eval/discover.py <program> --match 6001   # find cases
+uv run uvicorn rektopsy.api:app --reload                           # API on :8000
+PYTHONPATH=. uv run pytest -q tests
 ```
 Python 3.11 via uv. Scripts outside the package need `PYTHONPATH=.`.
 Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
@@ -117,7 +123,7 @@ Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
    | median latency | 2.9 s | 15.1 s |
    | median tokens | 763 | 1890 |
    Caveat: cause labels came from the same logs the pipeline reads.
-4. FastAPI: `POST /autopsy { signature }`.
+4. ✅ FastAPI: `POST /autopsy { signature }`.
 5. Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
    for the fix.
 6. Standalone embeddable JS widget.
