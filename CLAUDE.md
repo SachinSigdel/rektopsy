@@ -10,8 +10,9 @@ deterministically from the logs/meta, and return:
 4. Evidence: every claim traced to a log line or meta field
 
 ## Where we left off (2026-09-29)
-Steps 3-5 are done: API in `rektopsy/api.py` (tests in `tests/`), UI in `web/`.
-Next: step 6, the embeddable widget. Remaining eval gap: Meteora DAMM v2
+All 6 build steps are done: API (`rektopsy/api.py`, tests in `tests/`), UI
+(`web/`), widget (`widget/`). Next: deliverables (README with eval table,
+clean-env repro steps, 3-minute demo video), then the user's bot-wallet spot-check. Remaining eval gap: Meteora DAMM v2
 slippage (case03) shows the user's limits but no new value, since the pool
 doesn't log what the swap needed.
 The user is a Solana beginner: explain in plain words and back claims with evidence.
@@ -77,7 +78,11 @@ later only to test a proposed fix in a sandbox.
   `app/autopsy.tsx`). Calls `NEXT_PUBLIC_API_URL` (default localhost:8000).
   Evidence quotes log lines from the API's `log_lines` field. Next 16 ships its
   own docs in `web/node_modules/next/dist/docs/`; read them before changing APIs.
-- Planned: widget.
+- `widget/rektopsy-widget.js`: dependency-free `<rektopsy-autopsy>` custom
+  element (shadow DOM; `signature` attr runs at once, else shows an input; `api`
+  attr defaults to the script's origin). The API serves it at `GET /widget.js`
+  (cached 5 min: bust with `?v=` when testing). API data goes in as text only,
+  never innerHTML: it runs on other people's sites. `widget/demo.html` embeds it.
 
 ## Solana gotchas learned
 - Most failed Jupiter txs are bots. `discover.is_bot_like`: same mint in and
@@ -113,6 +118,7 @@ PYTHONPATH=. uv run python eval/discover.py <program> --match 6001   # find case
 uv run uvicorn rektopsy.api:app --reload                           # API on :8000
 PYTHONPATH=. uv run pytest -q tests
 cd web && pnpm dev                                                  # UI on :3000
+python3 -m http.server 8080 --directory widget     # widget demo at :8080/demo.html (API on :8000)
 ```
 Python 3.11 via uv. Scripts outside the package need `PYTHONPATH=.`.
 Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
@@ -143,7 +149,7 @@ Reference signature (real user, Jupiter 6001 slippage at 0.5%, no funds moved):
 4. ✅ FastAPI: `POST /autopsy { signature }`.
 5. ✅ Next.js + Tailwind UI: dark, serif headings, orange for the failure, teal
    for the fix.
-6. Standalone embeddable JS widget.
+6. ✅ Standalone embeddable JS widget.
 
 Deliverables: README (problem, how it works, eval table), clean-env repro
 steps, 3-minute demo video.

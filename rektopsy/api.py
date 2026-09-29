@@ -5,14 +5,18 @@ Read-only, like the rest of Rektopsy: no wallet, no keys, no signing.
 """
 
 import os
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from .fetch import SIGNATURE_RE, FetchError
 from .pipeline import autopsy
+
+WIDGET_JS = Path(__file__).resolve().parent.parent / "widget" / "rektopsy-widget.js"
 
 app = FastAPI(title="Rektopsy", description="Explain why a Solana transaction failed.")
 
@@ -33,6 +37,13 @@ class AutopsyRequest(BaseModel):
 @app.get("/health")
 def health() -> dict:
     return {"ok": True}
+
+
+@app.get("/widget.js", include_in_schema=False)
+def widget() -> FileResponse:
+    # Served from the API so the widget can default to calling the host it came from.
+    return FileResponse(WIDGET_JS, media_type="text/javascript",
+                        headers={"Cache-Control": "public, max-age=300"})
 
 
 @app.post("/autopsy")

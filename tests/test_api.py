@@ -58,3 +58,10 @@ def test_cors_allows_widget_origin(client):
     resp = client.options("/autopsy", headers={"Origin": "https://example.com",
                                                 "Access-Control-Request-Method": "POST"})
     assert resp.headers["access-control-allow-origin"] in ("*", "https://example.com")
+
+
+def test_widget_is_served(client):
+    resp = client.get("/widget.js")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"].startswith("text/javascript")
+    assert "customElements.define" in resp.text

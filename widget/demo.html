@@ -1,0 +1,38 @@
+<!doctype html>
+<!--
+  A pretend third-party page embedding the widget. Serve it from a different
+  port than the API to exercise CORS the way a real site would:
+    uv run uvicorn rektopsy.api:app --port 8000
+    python3 -m http.server 8080 --directory widget   # open http://localhost:8080/demo.html
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Widget demo</title>
+  <style>
+    /* Deliberately hostile host styles: the widget's shadow root should ignore them. */
+    body { font: 16px/1.5 "Comic Sans MS", cursive; background: #f4f1ea; color: #222;
+           max-width: 720px; margin: 40px auto; padding: 0 16px; }
+    button, input, section, h3, p { all: revert; color: red !important; font-size: 30px !important; }
+    h2 { margin-top: 40px; }
+  </style>
+  <script src="http://localhost:8000/widget.js" defer></script>
+</head>
+<body>
+  <h1>Some block explorer</h1>
+  <p>Input mode: the reader pastes any signature.</p>
+  <rektopsy-autopsy id="input-mode"></rektopsy-autopsy>
+
+  <h2>Pinned to one transaction</h2>
+  <p>A site can pass the signature it's already showing; the autopsy runs on load.</p>
+  <rektopsy-autopsy id="pinned"
+    signature="2KhUjNQsVikHC6JnpigNW4fhspGJYPM7SsgutEXjR6mj8ufLgSdVwA9KZEeMjCdhxGcMMMJG91rUyYM9h32c94zX">
+  </rektopsy-autopsy>
+
+  <script>
+    document.addEventListener("rektopsy:result", (e) => console.log("[rektopsy] result", e.detail.category));
+    document.addEventListener("rektopsy:error", (e) => console.log("[rektopsy] error", e.detail.message));
+  </script>
+</body>
+</html>
