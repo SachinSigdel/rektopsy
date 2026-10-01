@@ -31,6 +31,27 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
   );
 }
 
+// Header links shared by the landing page and the docs.
+export function SiteNav({ active }: { active?: "docs" }) {
+  const link = "text-sm no-underline hover:!text-text";
+  return (
+    <>
+      <Link href="/docs" className={`${link} ${active === "docs" ? "!text-text" : "!text-muted"}`}>
+        Docs
+      </Link>
+      <Link href="/#embed" className={`${link} !text-muted`}>
+        Embed
+      </Link>
+      <Link href="/#pricing" className={`${link} !text-muted`}>
+        Pricing
+      </Link>
+      <SoonButton className="h-11 rounded-[10px] border border-line bg-surface-2 px-5 text-sm text-text">
+        Connect wallet
+      </SoonButton>
+    </>
+  );
+}
+
 // Buttons for features that need a wallet. Rektopsy is read-only for now,
 // so these are shown as the designs have them, but disabled.
 export function SoonButton({ children, className = "" }: { children: ReactNode; className?: string }) {
