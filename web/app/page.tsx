@@ -2,6 +2,7 @@ import { API_URL } from "@/lib/api";
 import { EVAL } from "@/lib/eval-stats";
 import Link from "next/link";
 import { SiteHeader, SiteNav } from "./components/brand";
+import EmbedDemo from "./components/embed-demo";
 import SignatureForm from "./signature-form";
 
 const BAR_COLORS = ["#E8703A", "#C9603A", "#8C5240"];
@@ -23,12 +24,6 @@ const FEATURES = [
     body: "Each claim links to the instruction and log line it came from. The AI writes sentences; it never supplies a number.",
   },
 ];
-
-const EMBED_SNIPPET = `<script src="${API_URL}/widget.js" defer></script>
-<rektopsy-autopsy signature="…"></rektopsy-autopsy>
-
-<!-- or from your own code -->
-<script>Rektopsy.attach({ sig, theme: "dark", target: "#help" })</script>`;
 
 export default function Home() {
   return (
@@ -146,9 +141,7 @@ export default function Home() {
               yours, and it fires <code className="font-mono text-text-2">rektopsy:result</code> events
               your app can listen to.
             </p>
-            <pre className="mt-2 mb-0 overflow-x-auto rounded-[13px] border border-line-2 bg-bg px-4 py-3.5 font-mono text-[11.5px] leading-[1.8] text-log">
-              {EMBED_SNIPPET}
-            </pre>
+            <EmbedDemo apiUrl={API_URL} />
             <Link href="/docs#widget" className="mt-1 text-sm no-underline">
               Widget docs &rarr;
             </Link>
