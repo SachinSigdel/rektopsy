@@ -55,7 +55,7 @@ const PAUSE = 900;
 const LOADING = 1300;
 const HOLD = 5200;
 
-export default function EmbedDemo({ apiUrl }: { apiUrl: string }) {
+export default function EmbedDemo({ apiUrl, className = "" }: { apiUrl: string; className?: string }) {
   const all = useMemo(() => variants(apiUrl), [apiUrl]);
   const [v, setV] = useState(0);
   const [phase, setPhase] = useState<Phase>("typing");
@@ -119,7 +119,7 @@ export default function EmbedDemo({ apiUrl }: { apiUrl: string }) {
   }
 
   return (
-    <div className="mt-2 overflow-hidden rounded-[13px] border border-line-2 bg-[#0f1114]">
+    <div className={`mt-2 flex flex-col overflow-hidden rounded-[13px] border border-line-2 bg-[#0f1114] ${className}`}>
       {/* window chrome + tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-line-2 px-3 py-2">
         <span className="mr-1 flex gap-1.5" aria-hidden="true">
@@ -164,7 +164,7 @@ export default function EmbedDemo({ apiUrl }: { apiUrl: string }) {
         )}
       </div>
 
-      <div className="relative h-[352px]">
+      <div className="relative min-h-[352px] flex-1">
         {/* code */}
         <pre
           aria-label={`${variant.tab} embed code`}

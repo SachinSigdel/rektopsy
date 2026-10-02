@@ -5,6 +5,9 @@ import { SiteHeader, SiteNav } from "./components/brand";
 import EmbedDemo from "./components/embed-demo";
 import SignatureForm from "./signature-form";
 
+// Reference transaction (real user, Jupiter slippage at 0.5%): used for the share-card example.
+const EXAMPLE_SIG = "36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg";
+
 const BAR_COLORS = ["#E8703A", "#C9603A", "#8C5240"];
 
 const FEATURES = [
@@ -141,33 +144,53 @@ export default function Home() {
               yours, and it fires <code className="font-mono text-text-2">rektopsy:result</code> events
               your app can listen to.
             </p>
-            <EmbedDemo apiUrl={API_URL} />
+            <EmbedDemo apiUrl={API_URL} className="flex-1" />
             <Link href="/docs#widget" className="mt-1 text-sm no-underline">
               Widget docs &rarr;
             </Link>
           </div>
 
-          <div id="pricing" className="flex scroll-mt-6 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
-            <span className="eyebrow">Pricing</span>
-            <h2 className="m-0 font-serif text-[56px] leading-none font-normal">Free.</h2>
-            <p className="m-0 text-[15px] leading-[1.6] text-muted">
-              Rektopsy only reads public transaction data, so there is nothing to pay for.
-            </p>
-            <ul className="m-0 mt-1 flex list-none flex-col gap-2.5 p-0 text-sm">
-              {["No wallet connection", "No signing, no keys", "No fees, no account", "Open source, MIT licensed"].map(
-                (item) => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--fix)" strokeWidth="2"
-                      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
-                    {item}
-                  </li>
-                ),
-              )}
-            </ul>
-            <Link href="/docs" className="mt-auto pt-3 text-sm no-underline">
-              Read the docs &rarr;
+          <div className="flex flex-col gap-4">
+            <div id="pricing" className="flex scroll-mt-6 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+              <span className="eyebrow">Pricing</span>
+              <h2 className="m-0 font-serif text-[56px] leading-none font-normal">Free.</h2>
+              <p className="m-0 text-[15px] leading-[1.6] text-muted">
+                Rektopsy only reads public transaction data, so there is nothing to pay for.
+              </p>
+              <ul className="m-0 mt-1 flex list-none flex-col gap-2.5 p-0 text-sm">
+                {["No wallet connection", "No signing, no keys", "No fees, no account", "Open source, MIT licensed"].map(
+                  (item) => (
+                    <li key={item} className="flex items-center gap-2.5">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--fix)" strokeWidth="2"
+                        strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                      {item}
+                    </li>
+                  ),
+                )}
+              </ul>
+              <Link href="/docs" className="pt-3 text-sm no-underline">
+                Read the docs &rarr;
+              </Link>
+            </div>
+
+            <Link
+              href={`/report?sig=${EXAMPLE_SIG}`}
+              className="group flex flex-col gap-3 rounded-2xl border border-line bg-surface p-6 !text-text no-underline transition duration-200 hover:-translate-y-0.5 hover:border-fail-border sm:p-8"
+            >
+              <span className="eyebrow">Share cards</span>
+              <p className="m-0 text-[15px] leading-[1.6] text-muted">
+                Every report comes with an image for X and Discord: the cause and the fix, straight from the chain.
+              </p>
+              {/* eslint-disable-next-line @next/next/no-img-element -- generated PNG */}
+              <img
+                src={`/api/og?sig=${EXAMPLE_SIG}`}
+                alt="Example share card: the price moved further than you allowed. Fix: raise slippage to 1%."
+                loading="lazy"
+                className="block aspect-[1200/630] w-full rounded-xl border border-line-2 bg-bg object-cover"
+              />
+              <span className="text-sm text-fail group-hover:text-fail-hover">See the full report &rarr;</span>
             </Link>
           </div>
         </section>

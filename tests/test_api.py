@@ -73,3 +73,13 @@ def test_autopsy_includes_tx_summary(client):
     assert [s["status"] for s in tx["steps"]][7:] == ["ok", "failed", "not_run"]
     assert tx["logs"][tx["failure_log"]].endswith("custom program error: 0x1771")
     assert tx["compute_consumed"] > 0 and tx["programs_touched"] > 0
+
+
+def test_prose_false_skips_llm(client, monkeypatch):
+    def boom(*a, **k):
+        raise AssertionError("LLM must not be called when prose is false")
+    monkeypatch.setenv("GROQ_API_KEY", "test-not-used")
+    monkeypatch.setattr("rektopsy.explain.complete", boom)
+    body = client.post("/autopsy", json={"signature": REFERENCE, "prose": False}).json()
+    assert body["meta"]["mode"] == "template" and body["meta"]["attempts"] == 0
+    assert body["category"] == "slippage"

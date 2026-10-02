@@ -32,6 +32,9 @@ app.add_middleware(
 
 class AutopsyRequest(BaseModel):
     signature: str
+    # False skips the LLM and returns template prose; the facts are identical.
+    # Share cards use this: they only show deterministic fields.
+    prose: bool = True
 
 
 @app.get("/health")
@@ -54,7 +57,7 @@ def post_autopsy(req: AutopsyRequest) -> dict:
         raise HTTPException(400, "That doesn't look like a Solana transaction signature "
                                  "(86-88 base58 characters).")
     try:
-        return autopsy(signature)
+        return autopsy(signature, use_llm=req.prose)
     except FetchError as e:
         raise HTTPException(502, f"Couldn't read the transaction from Solana: {e}")
     except httpx.HTTPError as e:

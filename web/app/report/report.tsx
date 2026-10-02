@@ -5,19 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fetchAutopsy, type Autopsy, type Step } from "@/lib/api";
 import { condenseLog, label, shortId, timeAgo } from "@/lib/format";
+import { cardFacts, HEADLINES } from "@/lib/share";
 import { SiteHeader, SoonButton } from "../components/brand";
-
-// Deterministic one-line headlines per category (no numbers, so nothing to verify).
-const HEADLINES: Record<string, string> = {
-  slippage: "The price moved further than you allowed.",
-  compute_budget: "It ran out of compute before it finished.",
-  insufficient_funds: "There wasn't enough balance to cover it.",
-  account_not_found: "An account it needed doesn't exist yet.",
-  unknown_custom: "The program refused it, with an error we can't identify.",
-  never_landed: "It never reached the chain.",
-  succeeded: "Nothing went wrong. It went through.",
-  other: "The program stopped it.",
-};
 
 type Result = { sig: string } & ({ status: "error"; message: string } | { status: "done"; data: Autopsy });
 type State = { status: "loading" } | Result;
@@ -189,10 +178,64 @@ function ReportBody({ r }: { r: Autopsy }) {
 
         <div className="flex min-w-0 flex-1 flex-col gap-5">
           <Vitals r={r} />
+          <SharePanel r={r} />
           <RawLog r={r} />
         </div>
       </div>
     </>
+  );
+}
+
+// The share card: the same image X/Discord show for this link, plus ways to post it.
+function SharePanel({ r }: { r: Autopsy }) {
+  const [copied, setCopied] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const facts = cardFacts(r);
+  const image = `/api/og?sig=${r.signature}`;
+  const pageUrl = typeof window === "undefined" ? "" : `${window.location.origin}/report?sig=${r.signature}`;
+  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(facts.tweet)}&url=${encodeURIComponent(pageUrl)}`;
+  const btn =
+    "flex h-10 items-center justify-center gap-2 rounded-[10px] px-4 text-[13.5px] no-underline transition-colors";
+
+  return (
+    <section className="flex flex-col gap-4 rounded-[18px] border border-line bg-surface p-6">
+      <div className="flex items-center justify-between">
+        <span className="eyebrow">Share card</span>
+        <span className="text-xs text-faint">shows up when you post the link</span>
+      </div>
+      <div className="relative aspect-[1200/630] overflow-hidden rounded-xl border border-line-2 bg-bg">
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-surface-2" />}
+        {/* eslint-disable-next-line @next/next/no-img-element -- generated PNG, not a static asset */}
+        <img
+          src={image}
+          alt={`Rektopsy card: ${facts.headline} ${facts.fix ? `Fix: ${facts.fix}.` : ""}`}
+          onLoad={() => setLoaded(true)}
+          className={`block size-full object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
+        />
+      </div>
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+        <a href={intent} target="_blank" rel="noreferrer" className={`${btn} bg-fail font-medium !text-fail-ink hover:bg-fail-hover`}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.9-6.4L6.3 22H3.2l7.3-8.3L1 2h6.4l4.4 5.8zm-1.1 18.1h1.7L6.3 3.8H4.5z" />
+          </svg>
+          Post on X
+        </a>
+        <a href={image} download={`rektopsy-${r.signature.slice(0, 8)}.png`} className={`${btn} border border-line !text-text hover:border-muted`}>
+          Download image
+        </a>
+        <button
+          type="button"
+          onClick={async () => {
+            await navigator.clipboard.writeText(pageUrl).catch(() => {});
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1800);
+          }}
+          className={`${btn} cursor-pointer border border-line bg-transparent text-text hover:border-muted`}
+        >
+          {copied ? "Link copied" : "Copy link"}
+        </button>
+      </div>
+    </section>
   );
 }
 
