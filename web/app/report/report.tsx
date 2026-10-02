@@ -46,7 +46,7 @@ export default function Report() {
         </Notice>
       ) : state.status === "loading" ? (
         <Notice>
-          <span className="font-mono text-xs text-faint">{sig}</span>
+          <span className="font-mono text-xs break-all text-faint">{sig}</span>
           <br />
           Reading the transaction from Solana…
         </Notice>
