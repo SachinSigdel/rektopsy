@@ -1,0 +1,75 @@
+{
+  "scams": {
+    "real": {
+      "n": 32,
+      "likely_scam": 9,
+      "suspicious": 5,
+      "no_red_flags": 18
+    },
+    "illustrative": {
+      "n": 0,
+      "likely_scam": 0,
+      "suspicious": 0,
+      "no_red_flags": 0
+    }
+  },
+  "normal": {
+    "solana_forum": {
+      "n": 107,
+      "likely_scam": 0,
+      "suspicious": 0,
+      "no_red_flags": 107
+    },
+    "solana_se_older": {
+      "n": 500,
+      "likely_scam": 0,
+      "suspicious": 0,
+      "no_red_flags": 500
+    }
+  },
+  "by_channel": {
+    "email": {
+      "n": 3,
+      "likely_scam": 0,
+      "suspicious": 3,
+      "no_red_flags": 0
+    },
+    "website": {
+      "n": 3,
+      "likely_scam": 1,
+      "suspicious": 1,
+      "no_red_flags": 1
+    },
+    "token_or_nft_metadata": {
+      "n": 12,
+      "likely_scam": 6,
+      "suspicious": 0,
+      "no_red_flags": 6
+    },
+    "twitter": {
+      "n": 11,
+      "likely_scam": 1,
+      "suspicious": 1,
+      "no_red_flags": 9
+    },
+    "other": {
+      "n": 2,
+      "likely_scam": 0,
+      "suspicious": 0,
+      "no_red_flags": 2
+    },
+    "telegram": {
+      "n": 1,
+      "likely_scam": 1,
+      "suspicious": 0,
+      "no_red_flags": 0
+    }
+  },
+  "rules_that_fired": {
+    "blocklisted_link": 8,
+    "model": 6,
+    "free_reward": 4,
+    "urgency": 1,
+    "verify_wallet": 1
+  }
+}
