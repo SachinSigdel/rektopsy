@@ -32,10 +32,13 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
 }
 
 // Header links shared by the landing page and the docs.
-export function SiteNav({ active }: { active?: "docs" }) {
+export function SiteNav({ active }: { active?: "docs" | "check" }) {
   const link = "text-sm no-underline hover:!text-text";
   return (
     <>
+      <Link href="/check" className={`${link} ${active === "check" ? "!text-text" : "!text-muted"}`}>
+        Scam check
+      </Link>
       <Link href="/docs" className={`${link} ${active === "docs" ? "!text-text" : "!text-muted"}`}>
         Docs
       </Link>

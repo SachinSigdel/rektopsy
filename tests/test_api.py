@@ -83,3 +83,16 @@ def test_prose_false_skips_llm(client, monkeypatch):
     body = client.post("/autopsy", json={"signature": REFERENCE, "prose": False}).json()
     assert body["meta"]["mode"] == "template" and body["meta"]["attempts"] == 0
     assert body["category"] == "slippage"
+
+
+def test_scam_check(client, monkeypatch):
+    from rektopsy import scam
+    monkeypatch.setattr(scam, "blocklists", lambda: scam.Blocklists({"Test list": {"bad.example"}}))
+    r = client.post("/scam-check", json={"text": "Phantom support here, share your seed phrase at bad.example"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["verdict"] == "likely_scam"
+    assert {"secret_request", "blocklisted_link"} <= {f["rule"] for f in body["red_flags"]}
+    assert body["advice"][-1].startswith("If you already signed")
+    assert client.post("/scam-check", json={"text": "  "}).status_code == 400
+    assert client.post("/scam-check", json={"text": "x" * 5001}).status_code == 400

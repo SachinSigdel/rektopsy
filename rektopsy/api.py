@@ -1,10 +1,13 @@
 """HTTP API: POST /autopsy { signature } -> the same JSON as the CLI.
+POST /scam-check { text } -> red flags in a pasted message (rektopsy.scam).
 
 Run: uv run uvicorn rektopsy.api:app --reload
 Read-only, like the rest of Rektopsy: no wallet, no keys, no signing.
 """
 
 import os
+import threading
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 import httpx
@@ -13,12 +16,21 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from . import scam
 from .fetch import SIGNATURE_RE, FetchError
 from .pipeline import autopsy
 
 WIDGET_JS = Path(__file__).resolve().parent.parent / "widget" / "rektopsy-widget.js"
 
-app = FastAPI(title="Rektopsy", description="Explain why a Solana transaction failed.")
+@asynccontextmanager
+async def lifespan(_app):
+    # Download the phishing lists in the background so the first scam check isn't slow.
+    threading.Thread(target=scam.blocklists, daemon=True).start()
+    yield
+
+
+app = FastAPI(title="Rektopsy", description="Explain why a Solana transaction failed.",
+              lifespan=lifespan)
 
 # The embeddable widget runs on other people's sites, so default to any origin.
 # Nothing here uses cookies or credentials. Narrow with a comma-separated list.
@@ -35,6 +47,13 @@ class AutopsyRequest(BaseModel):
     # False skips the LLM and returns template prose; the facts are identical.
     # Share cards use this: they only show deterministic fields.
     prose: bool = True
+
+
+class ScamCheckRequest(BaseModel):
+    text: str
+
+
+MAX_SCAM_TEXT = 5000
 
 
 @app.get("/health")
@@ -62,3 +81,13 @@ def post_autopsy(req: AutopsyRequest) -> dict:
         raise HTTPException(502, f"Couldn't read the transaction from Solana: {e}")
     except httpx.HTTPError as e:
         raise HTTPException(502, f"Solana RPC request failed: {type(e).__name__}")
+
+
+@app.post("/scam-check")
+def post_scam_check(req: ScamCheckRequest) -> dict:
+    text = req.text.strip()
+    if not text:
+        raise HTTPException(400, "Paste a message or link to check.")
+    if len(text) > MAX_SCAM_TEXT:
+        raise HTTPException(400, f"That's too long to check (limit {MAX_SCAM_TEXT} characters).")
+    return scam.check_message(text)

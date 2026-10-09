@@ -76,3 +76,45 @@ export async function fetchAutopsy(signature: string, signal?: AbortSignal): Pro
   if (!resp.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Request failed (${resp.status}).`);
   return body as Autopsy;
 }
+
+export type ScamVerdict = "likely_scam" | "suspicious" | "no_red_flags";
+
+export type RedFlag = {
+  rule: string;
+  severity: "high" | "medium";
+  title: string;
+  why: string;
+  match: string;
+  quote: string;
+  start?: number;
+  end?: number;
+};
+
+export type ScamCheck = {
+  verdict: ScamVerdict;
+  headline: string;
+  advice: string[];
+  red_flags: RedFlag[];
+  links: { host: string; status: "official" | "blocklisted" | "lookalike" | "shortener" | "unknown"; detail: string; real?: string | null }[];
+  model: { score_pct: number; threshold_pct: number; flagged: boolean; top_words: string[]; trained_on: number };
+  lists_checked: string[];
+  lists_unavailable: string[];
+};
+
+export async function fetchScamCheck(text: string, signal?: AbortSignal): Promise<ScamCheck> {
+  let resp: Response;
+  try {
+    resp = await fetch(`${API_URL}/scam-check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+      signal,
+    });
+  } catch (e) {
+    if ((e as Error).name === "AbortError") throw e;
+    throw new Error(`Can't reach the Rektopsy API at ${API_URL}.`);
+  }
+  const body = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(typeof body.detail === "string" ? body.detail : `Request failed (${resp.status}).`);
+  return body as ScamCheck;
+}

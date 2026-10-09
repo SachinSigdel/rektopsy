@@ -19,6 +19,7 @@ Verdicts never say "safe": the best one is "no_red_flags".
 import json
 import math
 import re
+import threading
 import time
 import unicodedata
 from dataclasses import dataclass
@@ -59,21 +60,21 @@ RULES = [
          "Anyone with these words owns your wallet. No real support team, app or "
          "wallet ever asks for them.",
          _re(r"\b(share|send|give|enter|provide|type|paste|submit|import|input|tell|dm|"
-             r"verify|confirm|sync|need)\b[^.!?\n]{0,20}?\b(your|ur|me|us)\b"
-             r"(?:(?!\bmy\b)[^.!?\n]){0,25}?\b(" + SECRET + r")\b"),
+             r"verify|confirm|sync|need)\b(?:[^.!?\n]|[.!?](?=\S)){0,20}?\b(your|ur|me|us)\b"
+             r"(?:(?!\bmy\b)(?:[^.!?\n]|[.!?](?=\S))){0,25}?\b(" + SECRET + r")\b"),
          negatable=True),
     Rule("send_to_get_more", HIGH, "Send crypto to get more back",
          "Giveaways that ask you to send first are always scams. The money never comes back.",
          _re(r"\bsend\s+(me\s+|us\s+)?(\$?\d[\d.,]*\s*)?(sol|usdc|usdt|eth|btc|crypto|tokens?)\b"
-             r"[^.!?\n]{0,40}?\b(get|receive|return)\b[^.!?\n]{0,30}?(\d|double|twice|2x|back)"
+             r"(?:[^.!?\n]|[.!?](?=\S)){0,40}?\b(get|receive|return)\b(?:[^.!?\n]|[.!?](?=\S)){0,30}?(\d|double|twice|2x|back)"
              r"|\b(double|triple|2x|3x)\s+(your\s+)?(sol|crypto|money|tokens?|funds|investment)\b")),
     Rule("guaranteed_returns", HIGH, "Promises guaranteed or fast profits",
          "Nobody can guarantee trading profits. Promised daily returns are how "
          "investment scams start.",
-         _re(r"\bguarantee[sd]?\b[^.!?\n]{0,30}?\b(returns?|profits?|income|gains?)\b"
+         _re(r"\bguarantee[sd]?\b(?:[^.!?\n]|[.!?](?=\S)){0,30}?\b(returns?|profits?|income|gains?)\b"
              r"|\b\d+(\.\d+)?\s*%\s*(daily|per day|a day|weekly|per week|every day)\b"
              r"|\brisk[- ]?free\s+(profits?|returns?|income|trading)\b"
-             r"|\bearn(ing)?\s+\$?\d[\d,]*[^.!?\n]{0,40}?\b(within|in)\s+\d+\s*(hours?|hrs?|days?)\b")),
+             r"|\bearn(ing)?\s+\$?\d[\d,]*(?:[^.!?\n]|[.!?](?=\S)){0,40}?\b(within|in)\s+\d+\s*(hours?|hrs?|days?)\b")),
     Rule("verify_wallet", HIGH, "Asks you to verify or sync your wallet",
          "Wallets don't need verifying, syncing or validating. These pages drain "
          "whatever you sign.",
@@ -83,8 +84,8 @@ RULES = [
     Rule("wallet_to_claim", HIGH, "Connect or sign to claim something",
          "Fake airdrop and migration sites ask you to connect and sign. The "
          "signature hands over your tokens.",
-         _re(r"\b(connect|link|approve|sign)\b[^.!?\n]{0,50}?\b(" + CLAIM_WORDS + r")"
-             r"|\b(" + CLAIM_WORDS + r")\w*\b[^.!?\n]{0,50}?\b(connect|approve|sign)\b"),
+         _re(r"\b(connect|link|approve|sign)\b(?:[^.!?\n]|[.!?](?=\S)){0,50}?\b(" + CLAIM_WORDS + r")"
+             r"|\b(" + CLAIM_WORDS + r")\w*\b(?:[^.!?\n]|[.!?](?=\S)){0,50}?\b(connect|approve|sign)\b"),
          negatable=True,
          needs=_re(r"\bwallet|\bsign|\bapprove|<URL>|https?://|\w\.\w")),
     Rule("impersonation", MEDIUM, "Claims to be support, staff or the team",
@@ -109,7 +110,7 @@ RULES = [
          _re(r"\b(unclaimed|pending)\s+(rewards?|airdrops?|tokens?|funds)\b"
              r"|\byou(?:'re| are| have been)\s+(eligible|selected|chosen|whitelisted)\b"
              r"|\b(free|surprise)\s+(airdrops?|mint|sol|tokens?|nfts?|giveaway)\b"
-             r"|\bcongrat\w*\b[^.!?\n]{0,40}?\b(won|win|winner|eligible|selected)\b")),
+             r"|\bcongrat\w*\b(?:[^.!?\n]|[.!?](?=\S)){0,40}?\b(won|win|winner|eligible|selected)\b")),
     Rule("urgency", MEDIUM, "Pushes you to hurry",
          "Deadlines stop you from checking. Real offers don't vanish in an hour.",
          _re(r"\b(expires?|ending|ends)\s+(in|within|soon|today)\b"
@@ -123,11 +124,15 @@ RULES = [
 ]
 
 
+SENTENCE_END = re.compile(r"[.!?](?=\s|$)|\n")
+
+
 def _sentence(text: str, start: int, end: int, limit: int = 200) -> str:
     """The sentence around a match, so the quote reads naturally."""
-    left = max(text.rfind(c, 0, start) for c in ".!?\n") + 1
-    rights = [i for i in (text.find(c, end) for c in ".!?\n") if i != -1]
-    right = min(rights) + 1 if rights else len(text)
+    # A sentence ends at . ! ? followed by a space (so "jup.ag/claim" doesn't split) or a newline.
+    ends = [m.end() for m in SENTENCE_END.finditer(text)]
+    left = max([e for e in ends if e <= start], default=0)
+    right = min([e for e in ends if e >= end], default=len(text))
     quote = text[left:right].strip()
     return quote if len(quote) <= limit else text[start:end].strip()
 
@@ -220,7 +225,7 @@ def _official_for(host: str) -> str | None:
 def _lookalike(host: str) -> tuple[str, str] | None:
     """(official domain, reason) if the host imitates an official one."""
     if any(label.startswith("xn--") for label in host.split(".")):
-        return "", "uses look-alike letters from other alphabets (punycode)"
+        return "", "the name uses look-alike letters from other alphabets (punycode)"
     name = host.split(".")[-2] if host.count(".") >= 1 else host
     labels = host.split(".")[:-1]
     for dom, info in OFFICIAL.items():
@@ -230,7 +235,7 @@ def _lookalike(host: str) -> tuple[str, str] | None:
             if len(brand) >= 5 and len(name) >= 5 and name != brand and _edit_distance(name, brand) == 1:
                 return dom, f'"{name}" is one letter away from "{brand}"'
             if info["contains"] and any(brand in _skeleton(lbl) for lbl in labels):
-                return dom, f'uses the name "{brand}" but is not {dom}'
+                return dom, f'the name "{brand}" is used, but this is not {dom}'
     return None
 
 
@@ -272,7 +277,7 @@ def check_links(text: str, lists: "Blocklists | None" = None) -> tuple[list[dict
                           "real": dom or None})
             flags.append({"rule": "lookalike_link", "severity": HIGH,
                           "title": "Link imitates a real site",
-                          "why": f"{host} {reason}." + (f" The real site is {dom}." if dom else ""),
+                          "why": f"In {host}, {reason}." + (f" The real site is {dom}." if dom else ""),
                           "match": host, "quote": host})
             continue
         if _site(host) in SHORTENERS:
@@ -362,13 +367,15 @@ class Blocklists:
 
 _LISTS: Blocklists | None = None
 _LOADED_AT = 0.0
+_LOCK = threading.Lock()
 
 
 def blocklists() -> Blocklists:
     global _LISTS, _LOADED_AT
-    if _LISTS is None or time.time() - _LOADED_AT > MAX_AGE:
-        _LISTS, _LOADED_AT = Blocklists.load(), time.time()
-    return _LISTS
+    with _LOCK:  # API requests run in threads; load once, not once per request
+        if _LISTS is None or time.time() - _LOADED_AT > MAX_AGE:
+            _LISTS, _LOADED_AT = Blocklists.load(), time.time()
+        return _LISTS
 
 
 # ---------------------------------------------------------------- model
@@ -425,6 +432,45 @@ def model_score(text: str) -> dict:
 
 # ---------------------------------------------------------------- verdict
 
+HEADLINES = {
+    "likely_scam": "This looks like a scam.",
+    "suspicious": "Be careful: this has warning signs.",
+    "no_red_flags": "No red flags found.",
+}
+# Fixed advice per red flag, in the order shown. Written by hand, never generated.
+ADVICE = [
+    ({"secret_request"}, "Never share your seed phrase or private key. No real team, app or "
+                         "wallet will ever ask for it."),
+    ({"send_to_get_more"}, "Don't send anything. Nothing comes back."),
+    ({"verify_wallet", "wallet_to_claim"}, "Don't connect your wallet or sign anything this "
+                                           "message points you to."),
+    ({"guaranteed_returns"}, "Ignore promised profits. Nobody can guarantee returns."),
+    ({"impersonation", "unsolicited_help"}, "Real support never messages you first. Block and "
+                                            "report the sender."),
+    ({"blocklisted_link", "shortened_link"}, "Don't open the link."),
+    ({"fake_threat", "urgency"}, "Slow down. Check in the official app or site before doing "
+                                 "anything."),
+]
+ALREADY_ACTED = ("If you already signed something or shared your seed phrase, move your funds "
+                 "to a new wallet right away.")
+NO_FLAGS = ("That doesn't make it safe: we only catch known patterns. If it asks for your "
+            "seed phrase, money or a signature, stop.")
+
+
+def advice(verdict: str, flags: list[dict], links: list[dict]) -> list[str]:
+    if verdict == "no_red_flags":
+        return [NO_FLAGS]
+    fired = {f["rule"] for f in flags}
+    out = [text for rules, text in ADVICE if rules & fired]
+    real = sorted({link["real"] for link in links if link.get("real")})
+    if real:
+        out.insert(0, "Don't open the link. Type the real address yourself: " + ", ".join(real) + ".")
+    elif "lookalike_link" in fired and "Don't open the link." not in out:
+        out.insert(0, "Don't open the link.")
+    out.append(ALREADY_ACTED)
+    return out
+
+
 def check_message(text: str, lists: Blocklists | None = None) -> dict:
     """Facts for one pasted message. No numbers or claims beyond what's quoted."""
     lists = lists if lists is not None else blocklists()
@@ -448,6 +494,8 @@ def check_message(text: str, lists: Blocklists | None = None) -> dict:
         verdict = "no_red_flags"
     return {
         "verdict": verdict,
+        "headline": HEADLINES[verdict],
+        "advice": advice(verdict, flags, links),
         "red_flags": flags,
         "links": links,
         "model": {k: v for k, v in model.items() if k != "score"},
