@@ -8,12 +8,16 @@ Three kinds of evidence:
   send-1-get-2, sign-to-claim). Each red flag quotes the words that matched.
 - links: each domain is checked against official sites (look-alike spellings)
   and public phishing blocklists (see `blocklists`).
-- model: a second opinion (added separately).
+- model: a text classifier trained in scam/train.py (TF-IDF + logistic
+  regression), scored here in plain Python. A second opinion only: it can turn
+  "no red flags" into "suspicious", never into "likely scam", and it names the
+  words that pushed its score up.
 
 Verdicts never say "safe": the best one is "no_red_flags".
 """
 
 import json
+import math
 import re
 import time
 import unicodedata
@@ -367,6 +371,58 @@ def blocklists() -> Blocklists:
     return _LISTS
 
 
+# ---------------------------------------------------------------- model
+
+MODEL_PATH = Path(__file__).resolve().parent / "data" / "scam_model.json"
+URL_RE = re.compile(r"https?://\S+|www\.\S+", re.I)  # same as scam/fetch_data.py
+TOP_WORDS = 5
+_MODEL: dict | None = None
+
+
+def _model() -> dict:
+    global _MODEL
+    if _MODEL is None:
+        _MODEL = json.loads(MODEL_PATH.read_text())
+        _MODEL["_token_re"] = re.compile(_MODEL["token_pattern"])
+    return _MODEL
+
+
+def _ngrams(text: str, m: dict) -> list[str]:
+    """Same features as sklearn's TfidfVectorizer with the exported settings."""
+    text = re.sub(r"\s+", " ", URL_RE.sub("<URL>", text)).strip().lower()
+    tokens = m["_token_re"].findall(text)
+    lo, hi = m["ngram_range"]
+    return [" ".join(tokens[i:i + n]) for n in range(lo, hi + 1)
+            for i in range(len(tokens) - n + 1)]
+
+
+def model_score(text: str) -> dict:
+    m = _model()
+    counts: dict[str, int] = {}
+    for g in _ngrams(text, m):
+        if g in m["terms"]:
+            counts[g] = counts.get(g, 0) + 1
+    weights = {}
+    for g, c in counts.items():
+        tf = 1 + math.log(c) if m["sublinear_tf"] else c
+        weights[g] = tf * m["terms"][g][0]
+    norm = math.sqrt(sum(w * w for w in weights.values())) or 1.0
+    parts = {g: w / norm * m["terms"][g][1] for g, w in weights.items()}
+    z = m["intercept"] + sum(parts.values())
+    score = 1 / (1 + math.exp(-z))
+    top = sorted((p for p in parts.items() if p[1] > 0), key=lambda p: -p[1])[:TOP_WORDS]
+    return {
+        "score": score,
+        "score_pct": round(score * 100),
+        "threshold": m["threshold"],
+        "threshold_pct": round(m["threshold"] * 100),
+        "flagged": score >= m["threshold"],
+        # "url" is the <URL> placeholder: show it as what it stands for.
+        "top_words": ["a link" if w == "url" else w for w, _ in top],
+        "trained_on": m["trained_on"],
+    }
+
+
 # ---------------------------------------------------------------- verdict
 
 def check_message(text: str, lists: Blocklists | None = None) -> dict:
@@ -375,6 +431,15 @@ def check_message(text: str, lists: Blocklists | None = None) -> dict:
     flags = check_rules(text)
     links, link_flags = check_links(text, lists)
     flags += link_flags
+    model = model_score(text)
+    if model["flagged"]:
+        words = ", ".join(f'"{w}"' for w in model["top_words"])
+        flags.append({"rule": "model", "severity": MEDIUM,
+                      "title": "Reads like known scam messages",
+                      "why": f"A model trained on {model['trained_on']} labeled messages scored "
+                             f"this {model['score_pct']}% (it flags from {model['threshold_pct']}%)."
+                             + (f" Words that pushed it up: {words}." if words else ""),
+                      "match": "", "quote": ""})
     if any(f["severity"] == HIGH for f in flags):
         verdict = "likely_scam"
     elif flags:
@@ -385,6 +450,7 @@ def check_message(text: str, lists: Blocklists | None = None) -> dict:
         "verdict": verdict,
         "red_flags": flags,
         "links": links,
+        "model": {k: v for k, v in model.items() if k != "score"},
         "lists_checked": sorted(lists.sets),
         "lists_unavailable": lists.missing,
     }

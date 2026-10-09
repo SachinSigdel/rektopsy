@@ -65,3 +65,14 @@ def test_quotes_come_from_the_message():
     flag = next(f for f in check_message(text, LISTS)["red_flags"] if f["rule"] == "secret_request")
     assert flag["quote"] == "Please share your seed phrase with me."
     assert text[flag["start"]:flag["end"]] == flag["match"]
+
+
+def test_model_is_a_second_opinion():
+    # No rule fires on this; the model flags it and names the words behind its score.
+    out = check_message("WINNER!! Call now to collect your cash prize, reply YES", LISTS)
+    assert [f["rule"] for f in out["red_flags"]] == ["model"]
+    model_flag = out["red_flags"][0]
+    assert out["verdict"] == "suspicious" and model_flag["severity"] == "medium"
+    assert "prize" in out["model"]["top_words"]
+    assert out["model"]["score_pct"] >= out["model"]["threshold_pct"]
+    assert "score" not in out["model"]  # only rounded values reach the facts

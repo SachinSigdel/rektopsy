@@ -66,5 +66,73 @@
       "scams": 0,
       "false_alarms": 0
     }
+  },
+  "words@threshold": {
+    "threshold": 0.69,
+    "overall": {
+      "precision": 0.94,
+      "recall": 0.855,
+      "f1": 0.896,
+      "n": 1780,
+      "scams": 166,
+      "false_alarms": 9
+    },
+    "discord": {
+      "precision": 0.8,
+      "recall": 0.737,
+      "f1": 0.767,
+      "n": 359,
+      "scams": 38,
+      "false_alarms": 7
+    },
+    "sms": {
+      "precision": 0.983,
+      "recall": 0.891,
+      "f1": 0.934,
+      "n": 1021,
+      "scams": 128,
+      "false_alarms": 2
+    },
+    "solana_se": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n": 400,
+      "scams": 0,
+      "false_alarms": 0
+    }
+  },
+  "combined": {
+    "discord": {
+      "normal": {
+        "likely_scam": 0,
+        "suspicious": 8,
+        "no_red_flags": 313
+      },
+      "scam": {
+        "likely_scam": 4,
+        "suspicious": 25,
+        "no_red_flags": 9
+      }
+    },
+    "sms": {
+      "normal": {
+        "likely_scam": 0,
+        "suspicious": 3,
+        "no_red_flags": 890
+      },
+      "scam": {
+        "likely_scam": 0,
+        "suspicious": 114,
+        "no_red_flags": 14
+      }
+    },
+    "solana_se": {
+      "normal": {
+        "likely_scam": 0,
+        "suspicious": 0,
+        "no_red_flags": 400
+      }
+    }
   }
 }
