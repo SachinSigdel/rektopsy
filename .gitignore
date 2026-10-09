@@ -40,3 +40,6 @@ npm-debug.log*
 CLAUDE.md
 AGENTS.md
 .claude/
+
+# Scam-check training data (downloaded by scam/fetch_data.py)
+scam/data/
