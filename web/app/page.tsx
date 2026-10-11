@@ -106,9 +106,9 @@ export default function Home() {
               <p className="m-0 text-sm leading-[1.55]">
                 Drop the widget into your app and your support channel stops answering the same question.
               </p>
-              <a href="#embed" className="text-sm no-underline">
-                See the embed &rarr;
-              </a>
+              <Link href="/widget" className="text-sm no-underline">
+                Try the widget &rarr;
+              </Link>
             </div>
           </aside>
         </section>
@@ -222,9 +222,14 @@ export default function Home() {
               your app can listen to.
             </p>
             <EmbedDemo apiUrl={API_URL} className="flex-1" />
-            <Link href="/docs#widget" className="mt-1 text-sm no-underline">
-              Widget docs &rarr;
-            </Link>
+            <div className="mt-1 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              <Link href="/widget" className="no-underline">
+                Try the live widget &rarr;
+              </Link>
+              <Link href="/docs#widget" className="!text-muted no-underline hover:!text-text">
+                Widget docs
+              </Link>
+            </div>
           </div>
 
           <div className="flex flex-col gap-4">

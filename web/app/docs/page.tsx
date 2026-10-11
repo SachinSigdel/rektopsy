@@ -518,6 +518,13 @@ export default function DocsPage() {
               text only, never as HTML.
             </P>
             <CodeBlock lang="html" title="HTML" code={WIDGET_HTML} />
+            <P>
+              Try it live first: the{" "}
+              <Link href="/widget" className="no-underline">
+                widget playground
+              </Link>{" "}
+              runs the real widget against the API and writes this code for you.
+            </P>
           </Section>
 
           <Section id="widget-attributes" title="Attributes">

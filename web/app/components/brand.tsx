@@ -32,7 +32,7 @@ export function SiteHeader({ children }: { children?: ReactNode }) {
 }
 
 // Header links shared by the landing page and the docs.
-export function SiteNav({ active }: { active?: "docs" | "check" }) {
+export function SiteNav({ active }: { active?: "docs" | "check" | "widget" }) {
   const link = "text-sm no-underline hover:!text-text";
   return (
     <>
@@ -43,7 +43,7 @@ export function SiteNav({ active }: { active?: "docs" | "check" }) {
         Docs
       </Link>
       {/* Phones get the two pages; the landing anchors and the wallet button need room. */}
-      <Link href="/#embed" className={`${link} hidden !text-muted sm:inline`}>
+      <Link href="/widget" className={`${link} hidden sm:inline ${active === "widget" ? "!text-text" : "!text-muted"}`}>
         Embed
       </Link>
       <Link href="/#pricing" className={`${link} hidden !text-muted sm:inline`}>
@@ -86,6 +86,9 @@ export function SiteFooter() {
         </Link>
         <Link href="/check" className={link}>
           Scam check
+        </Link>
+        <Link href="/widget" className={link}>
+          Widget
         </Link>
         <Link href="/docs" className={link}>
           Docs
