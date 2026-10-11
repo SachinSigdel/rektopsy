@@ -34,6 +34,10 @@ def rules(text: str) -> set[str]:
     ("Claim at https://www.drainer-claims.xyz/airdrop", "blocklisted_link"),
     ("Claim at https://app.drainer-claims.xyz", "blocklisted_link"),
     ("Details: bit.ly/3abcd", "shortened_link"),
+    ("R\u0430ydium alpha program", "mixed_alphabets"),  # Cyrillic "а"
+    ("claimdrop.xyz 🎁 1000 ZERO", "airdrop_link"),
+    ("$ZERO AIRDROP", "free_reward"),
+    ("Visit the site to use your whitelist right now.", "visit_to_claim"),
 ])
 def test_rule_fires(text, rule):
     assert rule in rules(text)
@@ -47,6 +51,8 @@ def test_rule_fires(text, rule):
     "How do I load a private key from a file in Rust?",
     "the staff here are so cringe",
     "Swapping on https://jup.ag and checking it on solscan.io",
+    "Is the airdrop checker on jup.ag legit?",
+    "Привет, как дела? Swap failed again",  # Russian and English words side by side is fine
 ])
 def test_normal_messages_have_no_flags(text):
     assert check_message(text, LISTS)["verdict"] == "no_red_flags"

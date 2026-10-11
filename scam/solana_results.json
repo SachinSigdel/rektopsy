@@ -2,9 +2,9 @@
   "scams": {
     "real": {
       "n": 32,
-      "likely_scam": 9,
-      "suspicious": 5,
-      "no_red_flags": 18
+      "likely_scam": 13,
+      "suspicious": 8,
+      "no_red_flags": 11
     },
     "illustrative": {
       "n": 0,
@@ -42,9 +42,9 @@
     },
     "token_or_nft_metadata": {
       "n": 12,
-      "likely_scam": 6,
-      "suspicious": 0,
-      "no_red_flags": 6
+      "likely_scam": 10,
+      "suspicious": 2,
+      "no_red_flags": 0
     },
     "twitter": {
       "n": 11,
@@ -55,8 +55,8 @@
     "other": {
       "n": 2,
       "likely_scam": 0,
-      "suspicious": 0,
-      "no_red_flags": 2
+      "suspicious": 1,
+      "no_red_flags": 1
     },
     "telegram": {
       "n": 1,
@@ -67,9 +67,12 @@
   },
   "rules_that_fired": {
     "blocklisted_link": 8,
+    "free_reward": 7,
     "model": 6,
-    "free_reward": 4,
+    "airdrop_link": 3,
+    "visit_to_claim": 2,
     "urgency": 1,
+    "mixed_alphabets": 1,
     "verify_wallet": 1
   }
 }

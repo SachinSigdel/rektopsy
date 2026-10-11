@@ -110,7 +110,15 @@ RULES = [
          _re(r"\b(unclaimed|pending)\s+(rewards?|airdrops?|tokens?|funds)\b"
              r"|\byou(?:'re| are| have been)\s+(eligible|selected|chosen|whitelisted)\b"
              r"|\b(free|surprise)\s+(airdrops?|mint|sol|tokens?|nfts?|giveaway)\b"
-             r"|\bcongrat\w*\b(?:[^.!?\n]|[.!?](?=\S)){0,40}?\b(won|win|winner|eligible|selected)\b")),
+             r"|\bcongrat\w*\b(?:[^.!?\n]|[.!?](?=\S)){0,40}?\b(won|win|winner|eligible|selected)\b"
+             # Airdrop announcements in spam token/NFT names: "$ZERO AIRDROP", "Special AIRDROP ... REWARD"
+             r"|\$[a-z]{2,10}\s+airdrops?\b|\bspecial\s+airdrops?\b"
+             r"|\bairdrops?\b(?:[^.!?\n]|[.!?](?=\S)|\n){0,40}?\b(rewards?|vouchers?)\b")),
+    Rule("visit_to_claim", MEDIUM, "Sends you to a site to claim something",
+         "Claim pages linked from messages or airdropped tokens are how wallet drainers "
+         "get you to sign.",
+         _re(r"\b(visit|go to|head (over )?to|open)\s+(the\s+|our\s+|this\s+)?(site|website|link|page)\b"
+             r"(?:[^.!?\n]|[.!?](?=\S)){0,50}?\b(claim|whitelist|airdrop|reward|mint|eligib)")),
     Rule("urgency", MEDIUM, "Pushes you to hurry",
          "Deadlines stop you from checking. Real offers don't vanish in an hour.",
          _re(r"\b(expires?|ending|ends)\s+(in|within|soon|today)\b"
@@ -137,8 +145,38 @@ def _sentence(text: str, start: int, end: int, limit: int = 200) -> str:
     return quote if len(quote) <= limit else text[start:end].strip()
 
 
+WORD_RE = re.compile(r"\w+")
+
+
+def _script(ch: str) -> str | None:
+    if not ch.isalpha():
+        return None
+    name = unicodedata.name(ch, "")
+    for script in ("LATIN", "CYRILLIC", "GREEK"):
+        if name.startswith(script):
+            return script
+    return "OTHER"
+
+
+def mixed_script(text: str) -> dict | None:
+    """A word mixing Latin with Cyrillic or Greek letters ("Rауdium"): a spoof, never normal text."""
+    for m in WORD_RE.finditer(text):
+        scripts = {_script(c) for c in m.group(0)} - {None, "OTHER"}
+        if "LATIN" in scripts and scripts & {"CYRILLIC", "GREEK"}:
+            return {"rule": "mixed_alphabets", "severity": HIGH,
+                    "title": "Uses look-alike letters from another alphabet",
+                    "why": "Some letters are Cyrillic or Greek copies of English ones. That only "
+                           "happens when someone imitates a real name to fool you.",
+                    "match": m.group(0), "quote": _sentence(text, m.start(), m.end()),
+                    "start": m.start(), "end": m.end()}
+    return None
+
+
 def check_rules(text: str) -> list[dict]:
     flags = []
+    spoof = mixed_script(text)
+    if spoof:
+        flags.append(spoof)
     for rule in RULES:
         if rule.needs and not rule.needs.search(text):
             continue
@@ -432,6 +470,9 @@ def model_score(text: str) -> dict:
 
 # ---------------------------------------------------------------- verdict
 
+AIRDROP_BAIT = re.compile(r"\bairdrops?\b|\bvouchers?\b|\bclaim\b|\bwhitelist\b|\brewards?\b|🎁", re.I)
+LINK_RULES = {"blocklisted_link", "lookalike_link"}  # already a stronger link flag
+
 HEADLINES = {
     "likely_scam": "This looks like a scam.",
     "suspicious": "Be careful: this has warning signs.",
@@ -442,12 +483,14 @@ ADVICE = [
     ({"secret_request"}, "Never share your seed phrase or private key. No real team, app or "
                          "wallet will ever ask for it."),
     ({"send_to_get_more"}, "Don't send anything. Nothing comes back."),
-    ({"verify_wallet", "wallet_to_claim"}, "Don't connect your wallet or sign anything this "
+    ({"verify_wallet", "wallet_to_claim", "visit_to_claim", "airdrop_link"}, "Don't connect your wallet or sign anything this "
                                            "message points you to."),
     ({"guaranteed_returns"}, "Ignore promised profits. Nobody can guarantee returns."),
     ({"impersonation", "unsolicited_help"}, "Real support never messages you first. Block and "
                                             "report the sender."),
-    ({"blocklisted_link", "shortened_link"}, "Don't open the link."),
+    ({"blocklisted_link", "shortened_link", "airdrop_link"}, "Don't open the link."),
+    ({"mixed_alphabets"}, "Don't trust the name. Check the token or site in your wallet's "
+                          "official app instead."),
     ({"fake_threat", "urgency"}, "Slow down. Check in the official app or site before doing "
                                  "anything."),
 ]
@@ -477,6 +520,17 @@ def check_message(text: str, lists: Blocklists | None = None) -> dict:
     flags = check_rules(text)
     links, link_flags = check_links(text, lists)
     flags += link_flags
+    unofficial = [link for link in links if link["status"] != "official"]
+    bait = AIRDROP_BAIT.search(text)
+    if unofficial and bait and not any(f["rule"] in LINK_RULES for f in flags):
+        host = unofficial[0]["host"]
+        flags.append({"rule": "airdrop_link", "severity": HIGH,
+                      "title": "Airdrop or reward with a website to visit",
+                      "why": f"Tokens and messages that promise a reward and point to a site "
+                             f"({host}) are the usual way wallet drainers reach you. Real "
+                             f"airdrops are announced on the project's official site.",
+                      "match": bait.group(0), "quote": _sentence(text, bait.start(), bait.end()),
+                      "start": bait.start(), "end": bait.end()})
     model = model_score(text)
     if model["flagged"]:
         words = ", ".join(f'"{w}"' for w in model["top_words"])

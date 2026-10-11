@@ -7,6 +7,7 @@ Built for the Colosseum Crypto World's Fair hackathon.
 
 **Try it live:** [rektopsy.vercel.app](https://rektopsy.vercel.app) ·
 [example report](https://rektopsy.vercel.app/report?sig=36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg) ·
+[scam check](https://rektopsy.vercel.app/check) ·
 [docs](https://rektopsy.vercel.app/docs) ·
 [API explorer](https://rektopsy-api.onrender.com/docs) ·
 widget: `<script src="https://rektopsy-api.onrender.com/widget.js" defer></script>`
@@ -107,6 +108,80 @@ Read these honestly:
 
 Reproduce with `PYTHONPATH=. uv run python eval/run.py --baseline`. It reads
 saved fixtures in `eval/fixtures/`, so results don't depend on the chain.
+
+## Scam check
+
+Failed swaps cost a fee; scams cost the wallet. [`/check`](https://rektopsy.vercel.app/check)
+(API: `POST /scam-check {text}`) takes a pasted DM, tweet, email, link or
+airdropped token name and returns:
+
+- a verdict: **likely scam**, **suspicious**, or **no red flags found**. Never
+  "safe": we can only say what we didn't find.
+- every red flag with the exact sentence that triggered it, highlighted in the message
+- a status for each link: official, look-alike (`jup1ter.ag`, `phant0m-app.io`),
+  on a phishing blocklist, shortened, or not on any list
+- fixed, hand-written advice for each kind of flag
+
+Same rule as the autopsy: no LLM decides or writes anything here. Three parts,
+all in Python (`rektopsy/scam.py`):
+
+1. **Rules** for the scams that matter most and that a model can miss: requests
+   for your seed phrase or private key, send-X-get-more-back, guaranteed
+   returns, "verify/sync your wallet", connect-or-sign-to-claim, fake support,
+   look-alike letters from other alphabets, airdrop names that point to a site.
+2. **Links** checked against official domains (look-alike spellings) and the
+   public phishing lists from [Phantom](https://github.com/phantom/blocklist),
+   [MetaMask](https://github.com/MetaMask/eth-phishing-detect) and
+   [ScamSniffer](https://github.com/scamsniffer/scam-database) (~460k domains,
+   downloaded at runtime and cached for a day; not redistributed here).
+3. **A trained model** as a second opinion: TF-IDF + logistic regression
+   (`scam/train.py`), shipped as JSON and scored in plain Python. It can turn
+   "no red flags" into "suspicious", never into "likely scam", and it shows the
+   words that pushed its score up.
+
+Training data: the [Discord scam/clean messages](https://huggingface.co/datasets/wangyuancheng/discord-phishing-scam-clean)
+set (MIT), the [SMS Spam Collection](https://archive.ics.uci.edu/dataset/228/sms+spam+collection)
+(CC BY 4.0), and 2,000 [Solana Stack Exchange](https://solana.stackexchange.com)
+questions (CC BY-SA) as normal crypto talk, so mentioning a wallet isn't
+suspicious by itself. 8,903 messages, 832 scams.
+
+### How well it works
+
+| test set | scams flagged | normal messages flagged |
+|---|---|---|
+| General scams, held out from training (Discord + SMS) | 143/166 (86%) | 11/1,614 (0.7%) |
+| **Real Solana scams, blind** (before any tuning on them) | **14/32 (44%)** | 0/607 |
+| Real Solana scams, after adding rules for the misses | 21/32 (66%) | 0/607 |
+
+No normal message in any set was called "likely scam"; every false alarm was
+"suspicious".
+
+- **The blind Solana number is the honest one.** The 32 scams are real messages
+  quoted in news articles, security write-ups and GitHub issues, each with its
+  source URL in `scam/solana_test.json`. They were collected without looking at
+  the rules. After seeing the misses we added rules for airdrop token names,
+  look-alike alphabets and "visit the site to claim"; the 21/32 row is tuned on
+  the same 32 messages, so treat it as an upper bound.
+- **What it can't catch:** 10 of the 11 posts from hacked celebrity and brand
+  accounts ("buy $DOJA or else"). The text looks like an ordinary memecoin
+  post; the scam is that the account was hacked, which text can't show. The
+  11th miss is a phishing site titled "Reclaim SOL from Empty Token Accounts",
+  which reads like the real tools that do this.
+- **The test set is small and has no DMs.** Most published scam messages are
+  screenshots, and sites where victims paste DMs block automated reading.
+- **Normal messages are written posts** (forum topics, Stack Exchange questions),
+  which are easier than casual chat. Expect more "suspicious" on chat.
+- The rules were written while looking at the normal training messages, so the
+  general false-alarm number may be slightly optimistic.
+
+Reproduce:
+
+```
+uv run python scam/fetch_data.py                       # training data -> scam/data/
+uv run --group train python scam/train.py              # held-out scores, exports the model
+PYTHONPATH=scam uv run python scam/fetch_test_normal.py
+uv run python scam/eval_solana.py --show               # Solana test set
+```
 
 ## Run it from a clean machine
 
@@ -212,6 +287,8 @@ before the first build. It is baked in at build time, so redeploy after changing
 - **Fixes are suggested, not simulated.** Nothing is re-run against the chain yet.
 - **Token amounts are shown in raw units** (the token's smallest unit) where we
   don't have the token's decimals.
+- **The scam check reads text only.** It can't tell that an account was
+  hacked, and a link that's on no list isn't proof it's safe. See [Scam check](#scam-check).
 - **Coverage is what the test set covers.** Other programs fall back to their
   on-chain Anchor IDL if one is published, and to "unknown" if not.
 
@@ -220,7 +297,8 @@ before the first build. It is baked in at build time, so redeploy after changing
 ```
 rektopsy/   Python package: fetch, parse, decode, fixes, verify, explain, pipeline, api, CLI
 eval/       cases.json, fixtures/ (tx JSON + IDL snapshots), run.py, fix_scores.json, results.json
-tests/      offline API tests
+scam/       scam-check data scripts, training, Solana test set and results
+tests/      offline tests (API, scam rules)
 web/        Next.js + Tailwind UI (designs/ holds the HTML mockups it follows)
 widget/     embeddable <rektopsy-autopsy> element + demo page
 ```

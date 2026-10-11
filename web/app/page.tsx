@@ -58,6 +58,14 @@ export default function Home() {
             </p>
 
             <SignatureForm />
+
+            <Link
+              href="/check"
+              className="flex items-center gap-3 self-start rounded-xl border border-line bg-surface px-4 py-3 text-sm !text-text-2 no-underline hover:border-muted hover:!text-text"
+            >
+              <span className="size-[7px] shrink-0 rounded-full bg-fail" />
+              Got a strange DM or airdrop instead? Check it for scams →
+            </Link>
           </div>
 
           <aside className="flex flex-1 flex-col gap-4 pt-2">
