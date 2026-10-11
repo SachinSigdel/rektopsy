@@ -21,7 +21,7 @@ export function Pulse({ size = 22, color = "var(--fail)" }: { size?: number; col
 
 export function SiteHeader({ children }: { children?: ReactNode }) {
   return (
-    <header className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line px-4 py-3 sm:px-12">
+    <header className="sticky top-0 z-40 flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line bg-bg/85 px-4 py-3 backdrop-blur-md sm:px-12">
       <Link href="/" className="flex items-center gap-2.5 !text-text no-underline">
         <Pulse />
         <span className="font-serif text-[23px] tracking-[0.2px]">Rektopsy</span>

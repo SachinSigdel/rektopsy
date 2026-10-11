@@ -141,7 +141,7 @@ export default function Home() {
           ))}
         </section>
 
-        <section id="scam-check" className="scroll-mt-6 px-4 pt-4 sm:px-12">
+        <section id="scam-check" className="scroll-mt-24 px-4 pt-4 sm:px-12">
           <div className="grid grid-cols-1 gap-8 rounded-2xl border border-line bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
             <div className="flex flex-col gap-3">
               <span className="eyebrow">Scam check</span>
@@ -211,7 +211,7 @@ export default function Home() {
         </section>
 
         <section className="grid grid-cols-1 gap-4 px-4 pt-4 pb-14 sm:px-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-          <div id="embed" className="flex scroll-mt-6 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+          <div id="embed" className="flex scroll-mt-24 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
             <span className="eyebrow">Embed</span>
             <h2 className="m-0 font-serif text-[32px] leading-[1.1] font-normal">
               Put the autopsy where the failure happens.
@@ -233,7 +233,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <div id="pricing" className="flex scroll-mt-6 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+            <div id="pricing" className="flex scroll-mt-24 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
               <span className="eyebrow">Pricing</span>
               <h2 className="m-0 font-serif text-[56px] leading-none font-normal">Free.</h2>
               <p className="m-0 text-[15px] leading-[1.6] text-muted">

@@ -222,7 +222,7 @@ export default function DocsPage() {
 
       <div className="mx-auto flex w-full max-w-[1280px] flex-1 gap-12 px-4 sm:px-12">
         <aside className="hidden w-[220px] shrink-0 lg:block">
-          <div className="sticky top-0 max-h-screen overflow-y-auto py-10">
+          <div className="sticky top-[72px] max-h-[calc(100vh-72px)] overflow-y-auto py-10">
             <DocsNav groups={NAV} />
           </div>
         </aside>
@@ -606,7 +606,7 @@ export default function DocsPage() {
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow?: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-6 border-b border-line pt-10 pb-10 first:pt-0 last:border-0">
+    <section id={id} className="scroll-mt-24 border-b border-line pt-10 pb-10 first:pt-0 last:border-0">
       {eyebrow && <div className="eyebrow mb-3 !text-fail">{eyebrow}</div>}
       <h2 className="m-0 font-serif text-[36px] leading-[1.1] font-normal">
         <a href={`#${id}`} className="!text-text no-underline">
