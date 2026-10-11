@@ -3,6 +3,7 @@ import { EVAL } from "@/lib/eval-stats";
 import Link from "next/link";
 import { SiteHeader, SiteNav, SiteFooter } from "./components/brand";
 import EmbedDemo from "./components/embed-demo";
+import HeroPulse from "./components/hero-pulse";
 import SignatureForm from "./signature-form";
 
 // Reference transaction (real user, Jupiter slippage at 0.5%): used for the share-card example.
@@ -30,7 +31,16 @@ const FEATURES = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="relative isolate flex flex-1 flex-col">
+      {/* Live background behind the header and hero; fades out before the feature cards. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[760px] [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+      >
+        <HeroPulse />
+        {/* A dark wash behind the text column keeps the copy readable over the trace. */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_48%_52%_at_26%_48%,var(--bg)_35%,transparent_100%)] opacity-90" />
+      </div>
       <SiteHeader>
         <SiteNav />
       </SiteHeader>

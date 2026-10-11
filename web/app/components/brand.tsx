@@ -1,35 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export function Pulse({ size = 22, color = "var(--fail)" }: { size?: number; color?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M3 12h4l2 5 4-12 2 7h6" />
-    </svg>
-  );
-}
-
-export function SiteHeader({ children }: { children?: ReactNode }) {
-  return (
-    <header className="sticky top-0 z-40 flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line bg-bg/85 px-4 py-3 backdrop-blur-md sm:px-12">
-      <Link href="/" className="flex items-center gap-2.5 !text-text no-underline">
-        <Pulse />
-        <span className="font-serif text-[23px] tracking-[0.2px]">Rektopsy</span>
-      </Link>
-      <div className="flex flex-wrap items-center gap-3 sm:gap-8">{children}</div>
-    </header>
-  );
-}
+export { Pulse } from "./pulse";
+// The header animates on scroll, so it lives in a client component.
+export { SiteHeader } from "./site-header";
 
 // Header links shared by the landing page and the docs.
 export function SiteNav({ active }: { active?: "docs" | "check" | "widget" }) {
