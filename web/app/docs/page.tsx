@@ -7,7 +7,8 @@ import DocsNav, { type NavGroup } from "./docs-nav";
 
 export const metadata = {
   title: "Docs · Rektopsy",
-  description: "Rektopsy API and widget reference: explain why a Solana transaction failed.",
+  description:
+    "Rektopsy API and widget reference: explain why a Solana transaction failed, and check a message for scams.",
 };
 
 const SIG = "2KhUjNQsVikHC6JnpigNW4fhspGJYPM7SsgutEXjR6mj8ufLgSdVwA9KZEeMjCdhxGcMMMJG91rUyYM9h32c94zX";
@@ -29,6 +30,15 @@ const NAV: NavGroup[] = [
       { id: "categories", label: "Categories" },
       { id: "errors", label: "Errors" },
       { id: "other-endpoints", label: "Other endpoints" },
+    ],
+  },
+  {
+    title: "Scam check",
+    items: [
+      { id: "post-scam-check", label: "POST /scam-check" },
+      { id: "scam-response", label: "Response object" },
+      { id: "scam-rules", label: "Red flags" },
+      { id: "scam-accuracy", label: "Accuracy" },
     ],
   },
   {
@@ -115,6 +125,61 @@ const RESPONSE = `{
   }
 }`;
 
+const SCAM_CURL = `curl -X POST ${API_URL}/scam-check \\
+  -H "Content-Type: application/json" \\
+  -d '{"text": "Hi, I am from Phantom support. Please share your recovery phrase at phant0m-app.io to restore your wallet."}'`;
+
+// A real response from the live API, trimmed.
+const SCAM_RESPONSE = `{
+  "verdict": "likely_scam",
+  "headline": "This looks like a scam.",
+  "advice": [
+    "Don't open the link. Type the real address yourself: phantom.app.",
+    "Never share your seed phrase or private key. No real team, app or wallet will ever ask for it.",
+    …
+    "If you already signed something or shared your seed phrase, move your funds to a new wallet right away."
+  ],
+  "red_flags": [
+    {
+      "rule": "secret_request",
+      "severity": "high",
+      "title": "Asks for your secret phrase or private key",
+      "why": "Anyone with these words owns your wallet. No real support team, app or wallet ever asks for them.",
+      "match": "share your recovery phrase",
+      "quote": "Please share your recovery phrase at phant0m-app.io to restore your wallet.",
+      "start": 38,
+      "end": 64
+    },
+    {
+      "rule": "lookalike_link",
+      "severity": "high",
+      "title": "Link imitates a real site",
+      "why": "In phant0m-app.io, the name \\"phantom\\" is used on a different site. The real site is phantom.app.",
+      "match": "phant0m-app.io",
+      "quote": "phant0m-app.io"
+    },
+    …
+  ],
+  "links": [
+    {
+      "host": "phant0m-app.io",
+      "status": "lookalike",
+      "detail": "the name \\"phantom\\" is used on a different site",
+      "real": "phantom.app"
+    }
+  ],
+  "model": {
+    "score_pct": 65,
+    "threshold": 0.69,
+    "threshold_pct": 69,
+    "flagged": false,
+    "top_words": ["your", "your wallet", "from", "recovery phrase", "restore"],
+    "trained_on": 8903
+  },
+  "lists_checked": ["MetaMask's phishing list", "Phantom's blocklist", "ScamSniffer's database"],
+  "lists_unavailable": []
+}`;
+
 const WIDGET_HTML = `<script src="${API_URL}/widget.js" defer></script>
 
 <!-- Input box: the reader pastes any signature -->
@@ -175,6 +240,14 @@ export default function DocsPage() {
               Rektopsy explains why a Solana transaction failed. Send it a transaction signature and it
               returns the cause in plain language, the exact fix, whether your funds are safe, and the
               evidence behind every claim: a log line, an instruction, or a balance field.
+            </P>
+            <P>
+              It also checks pasted messages for scams before they cost you anything: send it a DM, tweet,
+              email or airdropped token name and it returns the red flags, quoted from the text. See{" "}
+              <a href="#post-scam-check" className="no-underline">
+                Scam check
+              </a>
+              .
             </P>
             <Callout>
               <strong className="font-medium text-text">Read-only by design.</strong> Rektopsy never
@@ -237,6 +310,7 @@ export default function DocsPage() {
             <Fields
               rows={[
                 ["signature", "string", "Required. The transaction signature: 86 to 88 base58 characters. Surrounding whitespace is ignored."],
+                ["prose", "boolean", "Optional, default true. false skips the LLM and returns template prose, faster and with 0 tokens; every fact is identical. Share cards use this."],
               ]}
             />
             <H3>Example response</H3>
@@ -318,6 +392,7 @@ export default function DocsPage() {
                 ["400", "The signature isn't 86 to 88 base58 characters.", "A plain-language message."],
                 ["422", "The body has no signature field, or isn't JSON.", "FastAPI validation errors (an array)."],
                 ["502", "Solana RPC failed or rate-limited the request.", "What went wrong. Retry after a few seconds."],
+                ["400 (/scam-check)", "The text is empty or longer than 5,000 characters.", "A plain-language message."],
               ]}
             />
             <P>
@@ -338,6 +413,101 @@ export default function DocsPage() {
                 {API_URL}/docs
               </a>
               .
+            </P>
+          </Section>
+
+          <Section id="post-scam-check" eyebrow="Scam check" title="POST /scam-check">
+            <Endpoint method="POST" path="/scam-check" />
+            <P>
+              Check a pasted message for scam red flags: a DM, tweet, email, Telegram message, link, or the
+              name of a token or NFT that showed up in a wallet. Requests take well under a second. Nothing
+              you send is stored. The same check runs on the{" "}
+              <Link href="/check" className="no-underline">
+                scam check page
+              </Link>
+              .
+            </P>
+            <Callout tone="fix">
+              <strong className="font-medium text-text">No LLM here.</strong> The verdict, every red flag
+              and every piece of advice come from Python: fixed rules, public phishing lists and a small
+              trained model. The verdict is never &quot;safe&quot;: the best one is &quot;no red flags
+              found&quot;.
+            </Callout>
+            <H3>Request body</H3>
+            <Fields
+              rows={[
+                ["text", "string", "Required. The message to check, 1 to 5,000 characters after trimming whitespace."],
+              ]}
+            />
+            <CodeBlock lang="bash" title="curl" code={SCAM_CURL} />
+            <H3>Example response</H3>
+            <P>A real response, trimmed; … marks omitted items.</P>
+            <CodeBlock lang="json" title="200 OK" code={SCAM_RESPONSE} />
+          </Section>
+
+          <Section id="scam-response" title="Response object">
+            <Fields
+              rows={[
+                ["verdict", "string", "likely_scam if any serious red flag fired, suspicious if only warning signs did, otherwise no_red_flags."],
+                ["headline", "string", "One plain sentence for the verdict."],
+                ["advice", "string[]", "What to do, chosen from fixed hand-written lines by the flags that fired."],
+                ["red_flags", "object[]", "Each flag: rule, severity (high or medium), title, why, match (the exact words), quote (the sentence around them). start and end are character offsets into the trimmed text, present for text rules only."],
+                ["links", "object[]", "Each domain found: host, status (official, lookalike, blocklisted, shortener, unknown), detail, and real (the genuine domain) for look-alikes."],
+                ["model", "object", "The trained model's second opinion: score_pct, threshold_pct, flagged, top_words (the words that pushed the score up), trained_on (messages)."],
+                ["lists_checked", "string[]", "The phishing lists the links were checked against."],
+                ["lists_unavailable", "string[]", "Lists that couldn't be loaded this time. Links are still checked against the rest."],
+              ]}
+            />
+            <P>
+              start and end count characters the Python way. In JavaScript, find the match text instead:
+              offsets drift after an emoji.
+            </P>
+          </Section>
+
+          <Section id="scam-rules" title="Red flags">
+            <P>Any high flag makes the verdict likely_scam. Medium flags alone make it suspicious.</P>
+            <Fields
+              head={["rule", "severity", "fires on"]}
+              rows={[
+                ["secret_request", "high", "Asks for your seed phrase, recovery phrase or private key. Warnings like \"never share your seed phrase\" don't count."],
+                ["send_to_get_more", "high", "Send crypto to get more back, or \"double your SOL\"."],
+                ["guaranteed_returns", "high", "Guaranteed profits, \"30% daily\", risk-free returns."],
+                ["verify_wallet", "high", "Verify, sync, validate or restore your wallet."],
+                ["wallet_to_claim", "high", "Connect, approve or sign to claim, mint, migrate or keep something."],
+                ["mixed_alphabets", "high", "A word mixing English letters with Cyrillic or Greek look-alikes (\"Rауdium\")."],
+                ["lookalike_link", "high", "A domain imitating a real one: swapped characters (jup1ter.ag), one letter off, a brand name on another site, or punycode."],
+                ["blocklisted_link", "high", "A domain on Phantom's, MetaMask's or ScamSniffer's phishing list."],
+                ["airdrop_link", "high", "Airdrop, reward or claim wording plus a site that isn't official: how spam tokens and NFTs lure you."],
+                ["impersonation", "medium", "Claims to be support, staff, a moderator or the team."],
+                ["unsolicited_help", "medium", "\"DM me\", offers to recover your funds, \"we noticed your…\"."],
+                ["fake_threat", "medium", "Your wallet is compromised, locked, or about to be liquidated."],
+                ["free_reward", "medium", "Unclaimed rewards, \"you're eligible\", free airdrops."],
+                ["visit_to_claim", "medium", "Visit the site to claim, mint or use a whitelist."],
+                ["urgency", "medium", "Deadlines and scarcity: \"expires in 1 hour\", \"only 500 spots left\"."],
+                ["shortened_link", "medium", "A link shortener such as bit.ly that hides the address."],
+                ["model", "medium", "The trained model scored the text at or above its threshold. It can make a verdict suspicious, never likely_scam."],
+              ]}
+            />
+            <P>
+              Phishing lists are downloaded when the API starts and refreshed daily. A link on no list
+              shows status unknown: that isn&apos;t proof it&apos;s safe.
+            </P>
+          </Section>
+
+          <Section id="scam-accuracy" title="Accuracy">
+            <Fields
+              head={["test set", "scams flagged", "normal flagged"]}
+              rows={[
+                ["General scams held out from training (Discord, SMS)", "143 / 166", "11 / 1,614"],
+                ["Real Solana scams, blind", "14 / 32", "0 / 607"],
+                ["Real Solana scams, after rules added for the misses", "21 / 32", "0 / 607"],
+              ]}
+            />
+            <P>
+              The blind row is the honest number: those 32 real messages were collected from news and
+              security write-ups without looking at the rules. The last row was tuned on the same messages.
+              Most remaining misses are posts from hacked celebrity and brand accounts, where the text looks
+              normal and the scam is the hack itself. Sources and the full test set are in the README.
             </P>
           </Section>
 
@@ -411,6 +581,7 @@ export default function DocsPage() {
                 "Fixes are suggested, not simulated.",
                 "Token amounts are in raw units (the token's smallest unit) when the token's decimals aren't known.",
                 "Coverage matches the programs Rektopsy has been tested on. Other programs fall back to their on-chain Anchor IDL, or to unknown_custom.",
+                "The scam check reads text only. It can't tell that an account was hacked, and a link on no list isn't proof it's safe.",
               ].map((t) => (
                 <li key={t} className="flex gap-3">
                   <span className="mt-[9px] size-1.5 shrink-0 rounded-full bg-faint" />

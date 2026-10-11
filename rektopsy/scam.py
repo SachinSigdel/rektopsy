@@ -273,7 +273,7 @@ def _lookalike(host: str) -> tuple[str, str] | None:
             if len(brand) >= 5 and len(name) >= 5 and name != brand and _edit_distance(name, brand) == 1:
                 return dom, f'"{name}" is one letter away from "{brand}"'
             if info["contains"] and any(brand in _skeleton(lbl) for lbl in labels):
-                return dom, f'the name "{brand}" is used, but this is not {dom}'
+                return dom, f'the name "{brand}" is used on a different site'
     return None
 
 
