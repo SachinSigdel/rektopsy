@@ -187,7 +187,8 @@ export default function EmbedDemo({ apiUrl, className = "" }: { apiUrl: string; 
             <span aria-hidden="true">🔒</span>
             {variant.host}
           </div>
-          <div className="flex flex-1 gap-4 overflow-hidden px-4 pt-3">
+          {/* Centered: the editor stretches to the height of the column beside it. */}
+          <div className="flex flex-1 items-center gap-4 overflow-hidden px-4 py-3">
             <div className="hidden flex-1 flex-col gap-2 pt-1 sm:flex" aria-hidden="true">
               <div className="h-2.5 w-2/3 rounded bg-[#1d2024]" />
               <div className="h-2 w-full rounded bg-[#17191c]" />
@@ -197,6 +198,14 @@ export default function EmbedDemo({ apiUrl, className = "" }: { apiUrl: string; 
               </div>
               <div className="h-2 w-3/4 rounded bg-[#17191c]" />
               <div className="h-2 w-1/2 rounded bg-[#17191c]" />
+              <div className="mt-3 flex flex-col gap-1.5 rounded-lg border border-line-2 p-2.5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="flex justify-between gap-3">
+                    <div className="h-2 w-1/3 rounded bg-[#17191c]" />
+                    <div className="h-2 w-1/5 rounded bg-[#1d2024]" />
+                  </div>
+                ))}
+              </div>
             </div>
             <MockWidget phase={phase} />
           </div>
@@ -230,7 +239,7 @@ function MockWidget({ phase }: { phase: Phase }) {
   const done = phase === "result";
   return (
     <div
-      className={`flex w-full max-w-[290px] shrink-0 flex-col gap-2.5 self-start rounded-xl border border-line bg-surface p-3.5 transition-all duration-500 ${
+      className={`flex w-full max-w-[290px] shrink-0 flex-col gap-2.5 rounded-xl border border-line bg-surface p-3.5 transition-all duration-500 ${
         phase === "typing" ? "translate-y-3 opacity-0" : "translate-y-0 opacity-100"
       }`}
     >

@@ -42,13 +42,14 @@ export function SiteNav({ active }: { active?: "docs" | "check" }) {
       <Link href="/docs" className={`${link} ${active === "docs" ? "!text-text" : "!text-muted"}`}>
         Docs
       </Link>
-      <Link href="/#embed" className={`${link} !text-muted`}>
+      {/* Phones get the two pages; the landing anchors and the wallet button need room. */}
+      <Link href="/#embed" className={`${link} hidden !text-muted sm:inline`}>
         Embed
       </Link>
-      <Link href="/#pricing" className={`${link} !text-muted`}>
+      <Link href="/#pricing" className={`${link} hidden !text-muted sm:inline`}>
         Pricing
       </Link>
-      <SoonButton className="h-11 rounded-[10px] border border-line bg-surface-2 px-5 text-sm text-text">
+      <SoonButton className="hidden h-11 rounded-[10px] border border-line bg-surface-2 px-5 text-sm text-text sm:inline-block">
         Connect wallet
       </SoonButton>
     </>
@@ -70,5 +71,29 @@ export function SoonButton({ children, className = "" }: { children: ReactNode; 
         Soon
       </span>
     </button>
+  );
+}
+
+// Shared footer: the read-only promise, plus links to every page.
+export function SiteFooter() {
+  const link = "!text-faint no-underline hover:!text-text";
+  return (
+    <footer className="mt-auto flex flex-col gap-3 border-t border-line px-4 py-6 text-xs text-faint sm:flex-row sm:items-center sm:justify-between sm:px-12">
+      <span>Read-only: no wallet connection, no signing, no keys. We only read public data.</span>
+      <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-2">
+        <Link href="/" className={link}>
+          Autopsy
+        </Link>
+        <Link href="/check" className={link}>
+          Scam check
+        </Link>
+        <Link href="/docs" className={link}>
+          Docs
+        </Link>
+        <a href="https://github.com/SachinSigdel/rektopsy" className={link}>
+          GitHub
+        </a>
+      </nav>
+    </footer>
   );
 }

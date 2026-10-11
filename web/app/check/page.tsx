@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { SiteHeader, SiteNav } from "../components/brand";
+import { SiteFooter, SiteHeader, SiteNav } from "../components/brand";
 import ScamChecker from "./scam-checker";
+
+const DESCRIPTION =
+  "Paste a suspicious DM, tweet or link. Rektopsy points out the red flags, quotes the exact words, and tells you what to do.";
 
 export const metadata: Metadata = {
   title: "Scam check · Rektopsy",
-  description:
-    "Paste a suspicious DM, tweet or link. Rektopsy points out the red flags, quotes the exact words, and tells you what to do.",
+  description: DESCRIPTION,
+  openGraph: {
+    title: "Scam check · Rektopsy",
+    description: DESCRIPTION,
+    url: "/check",
+    images: [{ url: "/api/og", width: 1200, height: 630, alt: "Rektopsy" }],
+  },
 };
 
 export default function CheckPage() {
@@ -33,6 +41,7 @@ export default function CheckPage() {
         </div>
         <ScamChecker />
       </main>
+      <SiteFooter />
     </div>
   );
 }

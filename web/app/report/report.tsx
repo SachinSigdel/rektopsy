@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fetchAutopsy, type Autopsy, type Step } from "@/lib/api";
-import { condenseLog, label, shortId, timeAgo } from "@/lib/format";
+import { condenseLog, displayValues, shortId, timeAgo } from "@/lib/format";
 import { cardFacts, HEADLINES } from "@/lib/share";
-import { SiteHeader, SoonButton } from "../components/brand";
+import { SiteHeader, SoonButton, SiteFooter } from "../components/brand";
 
 type Result = { sig: string } & ({ status: "error"; message: string } | { status: "done"; data: Autopsy });
 type State = { status: "loading" } | Result;
@@ -31,10 +31,16 @@ export default function Report() {
   return (
     <div className="flex flex-1 flex-col">
       <SiteHeader>
+        <Link href="/check" className="hidden text-sm !text-muted no-underline hover:!text-text md:inline">
+          Scam check
+        </Link>
+        <Link href="/docs" className="hidden text-sm !text-muted no-underline hover:!text-text md:inline">
+          Docs
+        </Link>
         {state.status === "done" && <ShareButton />}
         <Link
           href="/"
-          className="flex h-11 items-center rounded-[10px] border border-line bg-surface-2 px-5 text-sm !text-text no-underline"
+          className="flex h-9 items-center rounded-[10px] border border-line bg-surface-2 px-3 text-[13px] !text-text no-underline sm:h-11 sm:px-5 sm:text-sm"
         >
           New autopsy
         </Link>
@@ -57,10 +63,7 @@ export default function Report() {
       ) : (
         <ReportBody r={state.data} />
       )}
-
-      <footer className="mt-auto border-t border-line px-4 py-6 text-xs text-faint sm:px-12">
-        Read-only: no wallet connection, no signing, no keys. We only read public transaction data.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
@@ -92,9 +95,13 @@ function ShareButton() {
           window.prompt("Copy this link:", window.location.href);
         }
       }}
-      className="h-11 cursor-pointer rounded-[10px] border border-line bg-transparent px-[18px] text-sm text-muted hover:text-text"
+      className="h-9 cursor-pointer rounded-[10px] border border-line bg-transparent px-3 text-[13px] text-muted hover:text-text sm:h-11 sm:px-[18px] sm:text-sm"
     >
-      {copied ? "Link copied" : "Share report"}
+      {copied ? "Link copied" : (
+        <>
+          Share<span className="hidden sm:inline"> report</span>
+        </>
+      )}
     </button>
   );
 }
@@ -330,9 +337,16 @@ function StepRow({ step, last, detail }: { step: Step; last: boolean; detail: [s
             {title} failed &mdash; instruction {step.index + 1}
           </span>
           {detail.length > 0 && (
-            <span className="font-mono text-xs leading-[1.6] break-words text-fail-detail">
-              {detail.map(([k, v]) => `${label(k).toLowerCase()} ${v}`).join(" · ")}
-            </span>
+            <dl className="m-0 mt-1 grid grid-cols-1 gap-x-6 gap-y-1.5 sm:grid-cols-2">
+              {displayValues(Object.fromEntries(detail)).map((row) => (
+                <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-3 text-[13px]">
+                  <dt className="text-fail-detail">{row.label}</dt>
+                  <dd className="m-0 truncate font-mono text-xs text-fail-text" title={row.value}>
+                    {row.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           )}
         </div>
       </li>

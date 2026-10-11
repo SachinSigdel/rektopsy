@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { API_URL } from "@/lib/api";
 import CodeBlock from "../components/code-block";
-import { SiteHeader, SiteNav } from "../components/brand";
+import { SiteHeader, SiteNav, SiteFooter } from "../components/brand";
 import DocsNav, { type NavGroup } from "./docs-nav";
 
 export const metadata = {
@@ -592,10 +592,7 @@ export default function DocsPage() {
           </Section>
         </main>
       </div>
-
-      <footer className="border-t border-line px-4 py-6 text-xs text-faint sm:px-12">
-        Read-only: no wallet connection, no signing, no keys. We only read public transaction data.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

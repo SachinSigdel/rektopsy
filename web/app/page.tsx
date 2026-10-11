@@ -1,7 +1,7 @@
 import { API_URL } from "@/lib/api";
 import { EVAL } from "@/lib/eval-stats";
 import Link from "next/link";
-import { SiteHeader, SiteNav } from "./components/brand";
+import { SiteHeader, SiteNav, SiteFooter } from "./components/brand";
 import EmbedDemo from "./components/embed-demo";
 import SignatureForm from "./signature-form";
 
@@ -141,6 +141,75 @@ export default function Home() {
           ))}
         </section>
 
+        <section id="scam-check" className="scroll-mt-6 px-4 pt-4 sm:px-12">
+          <div className="grid grid-cols-1 gap-8 rounded-2xl border border-line bg-surface p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
+            <div className="flex flex-col gap-3">
+              <span className="eyebrow">Scam check</span>
+              <h2 className="m-0 font-serif text-[32px] leading-[1.1] font-normal">
+                Check the DM <span className="text-fail italic">before</span> it costs you.
+              </h2>
+              <p className="m-0 max-w-[520px] text-[15px] leading-[1.6] text-muted">
+                Paste a message, a link or an airdropped token&apos;s name. We look for the patterns behind crypto
+                scams, check links against public phishing lists, and quote the exact words that gave it away. No
+                chatbot is involved, and it never says &ldquo;safe&rdquo;.
+              </p>
+              <ul className="m-0 mt-1 flex list-none flex-col gap-2 p-0 text-sm text-text-2">
+                {[
+                  "Seed phrase requests, fake support, send\u20111\u2011get\u20112",
+                  "Look-alike links like jup1ter.ag, and ~460k known phishing domains",
+                  "A trained model as a second opinion, with the words behind its score",
+                ].map((item) => (
+                  <li key={item} className="flex gap-2.5">
+                    <span className="mt-[8px] size-1.5 shrink-0 rounded-full bg-fail" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/check"
+                className="mt-2 flex h-11 items-center self-start rounded-xl bg-fail px-6 text-sm font-medium !text-fail-ink no-underline hover:bg-fail-hover"
+              >
+                Check a message
+              </Link>
+            </div>
+
+            {/* A static copy of the live result for the "fake airdrop" example on /check. */}
+            <div aria-hidden="true" className="flex flex-col gap-3.5 rounded-xl border border-line-2 bg-bg p-5">
+              <div className="flex items-center justify-between">
+                <span className="font-serif text-[22px]">This looks like a scam.</span>
+                <span className="inline-flex h-[26px] items-center gap-2 rounded-lg border border-fail-border bg-fail-bg px-2.5 text-xs text-fail-text">
+                  <span className="size-1.5 rounded-full bg-fail" />
+                  Likely scam
+                </span>
+              </div>
+              <p className="m-0 rounded-lg border border-line-2 bg-surface px-3.5 py-3 text-[13.5px] leading-[1.65] text-text-2">
+                Congrats! <mark className="rounded-[3px] bg-fail-bg px-0.5 text-fail-text">You&apos;re eligible</mark> for
+                the JUP airdrop.{" "}
+                <mark className="rounded-[3px] bg-fail-bg px-0.5 text-fail-text">
+                  Connect your wallet at https://jup1ter.ag/claim before it expires
+                </mark>{" "}
+                in 1 hour.
+              </p>
+              {[
+                ["Link imitates a real site", "In jup1ter.ag, “jup1ter” is spelled to look like “jupiter”. The real site is jup.ag."],
+                ["Connect or sign to claim something", "Fake airdrop and migration sites ask you to connect and sign. The signature hands over your tokens."],
+              ].map(([title, why]) => (
+                <div key={title} className="flex gap-2.5">
+                  <span className="mt-[7px] size-2 shrink-0 rounded-full bg-fail" />
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13.5px] font-medium">{title}</span>
+                    <span className="text-[12.5px] leading-[1.5] text-muted">{why}</span>
+                  </div>
+                </div>
+              ))}
+              <div className="rounded-lg border border-fix-border bg-fix-bg px-3.5 py-2.5 text-[12.5px] leading-[1.5] text-fix-body">
+                <span className="font-mono text-[10.5px] tracking-[1.2px] text-fix-text uppercase">What to do · </span>
+                Don&apos;t open the link. Type the real address yourself: jup.ag.
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="grid grid-cols-1 gap-4 px-4 pt-4 pb-14 sm:px-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
           <div id="embed" className="flex scroll-mt-6 flex-col gap-3 rounded-2xl border border-line bg-surface p-6 sm:p-8">
             <span className="eyebrow">Embed</span>
@@ -203,10 +272,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-line px-4 py-6 text-xs text-faint sm:px-12">
-        Read-only: no wallet connection, no signing, no keys. We only read public transaction data.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
