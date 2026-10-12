@@ -39,7 +39,7 @@ export default function Home() {
       >
         <HeroPulse />
         {/* A dark wash behind the text column keeps the copy readable over the trace. */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_48%_52%_at_26%_48%,var(--bg)_35%,transparent_100%)] opacity-90" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_44%_48%_at_26%_48%,var(--bg)_30%,transparent_100%)] opacity-75" />
       </div>
       <SiteHeader>
         <SiteNav />

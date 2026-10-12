@@ -69,7 +69,7 @@ export default function HeroPulse({ className = "" }: { className?: string }) {
       ctx.clearRect(0, 0, w, h);
       // grid
       ctx.lineWidth = 1;
-      ctx.strokeStyle = "rgba(237, 234, 227, 0.035)";
+      ctx.strokeStyle = "rgba(237, 234, 227, 0.045)";
       ctx.beginPath();
       for (let x = (w % GRID) / 2; x < w; x += GRID) {
         ctx.moveTo(Math.round(x) + 0.5, 0);
@@ -84,12 +84,12 @@ export default function HeroPulse({ className = "" }: { className?: string }) {
       // trace: brightest at the sweep head, fading behind it
       const base = h * 0.58;
       const amp = Math.min(90, h * 0.16);
-      ctx.lineWidth = 1.4;
+      ctx.lineWidth = 1.7;
       ctx.lineJoin = "round";
       const seg = 24;
       for (let start = 0; start < w; start += seg) {
         const age = (head - (start + seg / 2) + w) % w; // px behind the head
-        const alpha = reduce ? 0.2 : Math.max(0, 0.32 * (1 - age / w) ** 1.5);
+        const alpha = reduce ? 0.32 : Math.max(0, 0.6 * (1 - age / w) ** 1.3);
         if (alpha <= 0.01) continue;
         ctx.strokeStyle = `rgba(${FAIL[0]}, ${FAIL[1]}, ${FAIL[2]}, ${alpha})`;
         ctx.beginPath();
@@ -115,7 +115,7 @@ export default function HeroPulse({ className = "" }: { className?: string }) {
         if (!Number.isNaN(v)) {
           const y = base - v * amp;
           const g = ctx.createRadialGradient(x, y, 0, x, y, 14);
-          g.addColorStop(0, `rgba(${FAIL[0]}, ${FAIL[1]}, ${FAIL[2]}, 0.55)`);
+          g.addColorStop(0, `rgba(${FAIL[0]}, ${FAIL[1]}, ${FAIL[2]}, 0.75)`);
           g.addColorStop(1, `rgba(${FAIL[0]}, ${FAIL[1]}, ${FAIL[2]}, 0)`);
           ctx.fillStyle = g;
           ctx.fillRect(x - 14, y - 14, 28, 28);
