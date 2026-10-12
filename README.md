@@ -3,11 +3,17 @@
 **Paste a failed Solana transaction. Get the cause of death, the exact fix, and
 whether your funds are safe, with every claim traced back to the chain.**
 
+Also: a **scam check** that flags red flags in a pasted DM, link or airdropped
+token name, quoting the exact words, and an **embeddable widget** so apps can
+explain failures where they happen. Read-only throughout: no wallet, no keys,
+no signing.
+
 Built for the Colosseum Crypto World's Fair hackathon.
 
 **Try it live:** [rektopsy.vercel.app](https://rektopsy.vercel.app) ·
 [example report](https://rektopsy.vercel.app/report?sig=36V9G2WgBdWsZNdgsb1V2U4jJ9xGfNC5ehv9YeKrGnvhXjKNTgcBoJian5VtRNFBHYegjhbRWtQ1eBwmqXJEgrcg) ·
 [scam check](https://rektopsy.vercel.app/check) ·
+[widget playground](https://rektopsy.vercel.app/widget) ·
 [docs](https://rektopsy.vercel.app/docs) ·
 [API explorer](https://rektopsy-api.onrender.com/docs) ·
 widget: `<script src="https://rektopsy-api.onrender.com/widget.js" defer></script>`
@@ -218,8 +224,9 @@ uv run uvicorn rektopsy.api:app --port 8000
 cd web && cp .env.example .env.local && pnpm install && pnpm dev   # http://localhost:3000
 ```
 
-The UI has two pages: `/` (paste a signature) and `/report?sig=<signature>`,
-which is a shareable link to one autopsy.
+The UI pages: `/` (paste a signature), `/report?sig=<signature>` (a shareable
+autopsy with its own share image), `/check` (scam check), `/widget` (live widget
+playground) and `/docs` (API and widget reference).
 
 **Embeddable widget.** The API serves it, so any site can add:
 
@@ -234,7 +241,9 @@ which is a shareable link to one autopsy.
 "Full autopsy" link. The retry button in the widget and the report page is a
 disabled preview: Rektopsy is read-only and never asks for a wallet.
 
-Try it with `python3 -m http.server 8080 --directory widget`, then open
+Try it live at [rektopsy.vercel.app/widget](https://rektopsy.vercel.app/widget),
+which runs the real widget and writes the embed code for you. Locally: run
+`python3 -m http.server 8080 --directory widget`, then open
 http://localhost:8080/demo.html. The widget uses a shadow root so host styles
 can't break it, and inserts API data only as text. It fires `rektopsy:result`,
 `rektopsy:error` and `rektopsy:dismiss` events.
